@@ -1,0 +1,39 @@
+.message-box-container {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-width: 90%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+  }
+
+  .message-box-container h2 {
+    margin-top: 0;
+  }
+
+  .message-box-container p {
+    margin-bottom: 20px;
+  }
+
+  .message-box-container button {
+    background-color: #ff5a5f;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .message-box-container button:hover {
+    background-color: #ff4146;
+  }
+  
+  .
