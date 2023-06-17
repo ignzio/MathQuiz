@@ -1,0 +1,43 @@
+.select-difficulty-container {
+    display: none;
+    flex-direction: column;
+    align-items: center; /* Add this line */
+
+  }
+  
+  .difficulty-buttons {
+    display: flex;
+    justify-content: center; /* Add this line */
+  }
+  
+  .difficulty-buttons input[type="radio"] {
+    display: none;
+  }
+  
+   
+  .difficulty-buttons label {
+    /* Modify the padding */
+    padding: 10px 15px;
+    margin: 0 5px; /* Add this line */
+  }
+  
+  .difficulty-buttons label:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .difficulty-buttons input[type="radio"]:checked + label {
+    background-color: #a0a0a0;
+    color: #fff;
+  }
+  
+  
+
+
+  
+  /* Add media queries to adjust the width of the container on smaller screens */
+  @media (max-width: 600px) {
+    .difficulty-container {
+      width: 100%;
+    }
+  }
+  

@@ -1,0 +1,9 @@
+.question-container {
+    display: none;
+    margin: 50px auto;
+    padding: 20px;
+    width: 400px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }

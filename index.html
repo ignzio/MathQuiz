@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Math Quiz</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
+  <script src="main.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="select-difficulty-container.css" />
+  <link rel="stylesheet" href="question-container.css" />
+  <link rel="stylesheet" href="start-game-container.css" />
+  <link rel="stylesheet" href="answer-container.css" />
+  <link rel="stylesheet" href="message-box.css" />
+
+</head>
+<body>
+  <h1>Math Quiz</h1>
+  <!--
+
+
+  -->
+  <div class="start-game-container">
+    <label for="player-name">Enter your name:</label>
+    <input type="text" id="player-name" placeholder="Your Name">
+    <button onclick="play()">Start Quiz</button>
+    </div>
+
+ <!--
+
+    
+  -->
+  <div class="select-difficulty-container">
+    <label>Select Difficulty:</label>
+    <div class="difficulty-buttons">
+      <input type="radio" id="beginner" name="difficulty" value="Beginner">
+      <label for="beginner">Beginner</label>
+      
+      <input type="radio" id="intermediate" name="difficulty" value="Intermediate">
+      <label for="intermediate">Intermediate</label>
+      
+      <input type="radio" id="advanced" name="difficulty" value="Advanced">
+      <label for="advanced">Advanced</label>
+      
+      <input type="radio" id="expert" name="difficulty" value="Expert">
+      <label for="expert">Expert</label>
+    </div>
+    <button
+    id="select-difficulty-button"
+    >Select Difficulty</button>
+  </div>
+  
+
+   <!--
+
+    
+  -->
+  <div class="question-container">
+    <p id="question"></p>
+    <button onclick="">Generate Question</button>
+    <input type="number" id="answer" placeholder="Your Answer">
+    <button onclick="">Check</button>
+    <p id="result"></p>
+    <p>Attempts: <span id="attempts">0</span></p>
+  </div>
+
+
+<!--
+
+    modal
+  -->
+
+    
+
+</body>
+<div class="message-box-container">
+    <h2 id="message-box-title"></h2>
+    <p id="message-box-message"></p>
+    <button id="close-message-box-button">Close</button>
+
+    <div class="message-box-buttons">
+   
+    </div>
+</html>
