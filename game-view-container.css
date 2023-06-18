@@ -1,0 +1,22 @@
+.game-view-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin: 50px auto;
+    
+}
+@media only screen and (max-width: 1200px)  {
+    .game-view-container{
+        flex-direction: column;
+     
+    }
+    .game-view-container .player-info-container{
+     
+        order : 2;
+    }
+
+    
+}
+/* all screen sizes */

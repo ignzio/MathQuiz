@@ -12,6 +12,17 @@ body {
     background-color: var(--primary-color);
     text-align: center;
     font-family: var(--font-body);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
 }
 
 body::after {
@@ -50,8 +61,11 @@ p {
 }
 
 button {
-    background-color: #ff5a5f;
+    background-color: var(--tertiary-color);
     color: #fff;
+    font-size: 3rem;
+    font-weight: 900;
+
     border: none;
     border-radius: 3px;
     padding: 10px 20px;
@@ -59,8 +73,66 @@ button {
     cursor: pointer;
     transition: background-color 0.3s;
     margin-top: 10px;
+    font-family: 'Baloo', cursive;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0px 2px 1px rgba(0, 0, 0, 0.75)
+
 }
 
 button:hover {
     background-color: #ff4146;
+    transform: scale(1.1);
+}
+button:disabled {
+    background-color: #ccc;
+    color: #fff;
+    cursor: not-allowed;
+    transform : scale(1);
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    
+    color: #fff;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75)
+
+}
+footer a {
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Baloo', cursive;
+    font-size: 1.2rem;
+    text-decoration: underline;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75)
+}
+footer p{
+    font-family: 'Baloo', cursive;
+    font-size: 1.2rem;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75)
+}
+footer a:hover {
+    text-decoration: underline;
+    animation: pulse 0.5s infinite alternate;
+    color : #ff4146;
+}
+@keyframes pulse {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.1);
+    }
+}
+
+.footer-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
 }

@@ -1,4 +1,4 @@
-function play(e){
+function play(e) {
     e.preventDefault();
     GameManager.getInstance().startGame();
 }
@@ -43,7 +43,7 @@ class GameManager {
     }
 
     startGame() {
-        if(!this._inGame){
+        if (!this._inGame) {
             this._inGame = true;
             this.setGame(new Game());
             this._uiController.setPlayerName();
@@ -52,11 +52,11 @@ class GameManager {
         }
 
 
-       
-      
+
+
     }
 
-   
+
 }
 
 
@@ -71,98 +71,210 @@ class GameManager {
 // Validates the player's answer and provides feedback on correctness.
 // Interacts with the user interface (UI) elements to display questions, retrieve answers, and show results.
 // May handle additional game-related functionalities such as scoring, level progression, or game flow.
-class GameController{
-   _strike = 0;
-   generateQuestion(event){
-    event.preventDefault();
-    switch (GameManager.getInstance().getGame().getDifficulty()) {
-        case 'Beginner':
-            return this.generateBeginnerQuestion();
-        case 'Intermediate':
-            return this.generateIntermediateQuestion();
-        case 'Advanced':
-            return this.generateAdvancedQuestion();
-        default:
-            throw new Error('Invalid difficulty level.');
-   }
-}
-generateBeginnerQuestion(){
+class GameController {
+    _strike = 0;
+    _timeTimer = 0;
+    _timerOn = false;
 
-    const gameManager = GameManager.getInstance();
-    const game = GameManager.getInstance().getGame();
-    const uiController = GameManager.getInstance()._uiController;
-
-    const firstNumber = Math.floor(Math.random() * 10);
-    const secondNumber = Math.floor(Math.random() * 10);
-    const operator = ['+', '-'][Math.floor(Math.random() * 2)];
-    const answer = operator === '+' ? firstNumber + secondNumber : firstNumber - secondNumber;
-    const question = `${firstNumber} ${operator} ${secondNumber}`;
-
-    game.setQuestion(question);
-    game.setAnswer(answer);
-    uiController.displayGeneratedQuestion(question);
-    uiController.enableCheckAnswerButton();
-    uiController.disableGenerateQuestionButton();
-    uiController.clearAnswerInput();
-    uiController.hideMessageBoxUI();
-   }
-  
-   checkAnswer(event){
-    event.preventDefault();
-    const gameManager = GameManager.getInstance();
-    const game = gameManager.getGame();
-    const answer = game.getAnswer();
-    const uiController =gameManager._uiController;
-
-    if(!answer){
-        uiController.clearMessageBoxButtons();
-        uiController.addMessageBoxButton('Generate', () => { uiController.hideMessageBoxUI(), this.generateBeginnerQuestion(); });
-        uiController.displayMessageBox('Error!', 'Please generate a question first.');
-        return;   
+    _timerInterval;
+    _timeToAnswerTimer = 0;
+    _timeToAnswerInterval;
+    checkDifficulty(difficulty) {
+        switch (difficulty) {
+            case 'Beginner':
+                return this.generateBeginnerQuestion();
+            case 'Intermediate':
+                return this.generateIntermediateQuestion();
+            case 'Advanced':
+                return this.generateAdvancedQuestion();
+            default:
+                throw new Error('Invalid difficulty level.');
+        }
     }
-    const playerAnswer = uiController._answerInput.value;
-    if(!playerAnswer){
+    gameOver(lastPlayerAnswer) {
+        const gameManager = GameManager.getInstance();
+        const game = gameManager.getGame();
+        const uiController = gameManager._uiController;
+
+        const answer = game.getAnswer();
+
         uiController.clearMessageBoxButtons();
-        uiController.displayMessageBox('Error!', 'Please enter your answer.');
-        return;
-    }
-    if (answer === parseInt(playerAnswer)) {
-        game.setScore(game.getScore() + 1);
-        uiController.clearMessageBoxButtons();
-        uiController.displayMessageBox('Correct!', `You got the correct answer! <p>score +${1}</p>`);
-        uiController.addMessageBoxButton('Generate New Question', () => { uiController.hideMessageBoxUI(), this.generateBeginnerQuestion(); });  
-        uiController.updatePlayerInfo(game.getPlayerName(), game.getScore(), game.getAttempt(), game.getDifficulty());
-        uiController.disableCheckAnswerButton();
+        uiController.addMessageBoxButton('Close', () => {
+            uiController.hideMessageBoxUI();
+        });
+
+        uiController.displayMessageBox('Game Over!', `
+                    Question: ${game.getQuestion()}<br>
+                    your answer:
+                    <p style="color: red;">
+                    ${lastPlayerAnswer}
+                    </p>
+                    <br>
+                    The correct answer was 
+                    <p style="color: green;">
+                    ${answer}
+                    </p>
+                `);
+
+        uiController.hideQuestionUI();
+        uiController.displayStartGameUI();
+        uiController.hidePlayerInfoUI();
+        uiController._question.innerHTML = '';
         uiController.enableGenerateQuestionButton();
 
-    } else {
-        if(game.getAttempt() === 1){
-            uiController.clearMessageBoxButtons();
-            uiController.displayMessageBox('Game Over!', `
-            Question: ${game.getQuestion()}<br>
-            your answer:
-            <p style="color: red;">
-            ${playerAnswer}
-            </p>
-            <br>
-            The correct answer is 
-            <p style="color: green;">
-            ${answer}
-            </p>
-            `);
-        
-            uiController.hideQuestionUI();
-            uiController.displayStartGameUI();
-            uiController.hidePlayerInfoUI();
 
-            //reset Game state
-            gameManager._inGame = false;
-            game.resetGame();
+        // Reset Game state
+        gameManager._inGame = false;
+        game.resetGame();
+        return;
+    }
+
+
+    initializeGame(difficulty, attempt,timer) {
+        const gameManager = GameManager.getInstance();
+        const game = gameManager.getGame();
+        const uiManager = gameManager._uiController;
+
+        this._timeTimer= timer;
+
+        game.setDifficulty(difficulty);
+        game.setAttempt(attempt);
+        game.setScore(0);
+        game.setQuestion(null);
+        game.setAnswer(null);
+        uiManager.updatePlayerInfo(game.getPlayerName(), game.getScore(), game.getAttempt(), game.getDifficulty());
+        this.startGame();
+
+    }
+    setGamemode(difficulty) {
+        switch (difficulty) {
+            case 'Beginner':
+                this.initializeGame('Beginner', 3,60);
+                break;
+            case 'Intermediate':
+                this.initializeGame('Intermediate', 5,60);
+                break;
+            case 'Advanced':
+                this.initializeGame('Advanced', 7,60);
+                break;
+            case 'Expert':
+                this.initializeGame('Expert', 10,60);
+                break;
+            default:
+                throw new Error('Invalid difficulty level.');
+        }
+    }
+    startGame() {
+        const gameManager = GameManager.getInstance();
+        const uiManager = gameManager._uiController;
+        uiManager.hideStartGameUI();
+        uiManager.displayQuestionUI();
+        uiManager.displayPlayerInfoUI();
+        uiManager.hideSelectDifficultyUI();
+        uiManager.hideMessageBoxUI();
+        uiManager.updateTimer(this._timeTimer);
+
+    }
+
+
+
+
+    generateQuestion(event) {
+        event.preventDefault();
+        switch (GameManager.getInstance().getGame().getDifficulty()) {
+            case 'Beginner':
+                return this.generateBeginnerQuestion();
+            case 'Intermediate':
+                return this.generateIntermediateQuestion();
+            case 'Advanced':
+                return this.generateAdvancedQuestion();
+            default:
+                throw new Error('Invalid difficulty level.');
+        }
+    }
+
+
+    generateBeginnerQuestion() {
+        const uiController = GameManager.getInstance()._uiController;
+        const firstNumber = Math.floor(Math.random() * 10);
+        const secondNumber = Math.floor(Math.random() * 10);
+        const operator = ['+', '-'][Math.floor(Math.random() * 2)];
+        const answer = operator === '+' ? firstNumber + secondNumber : firstNumber - secondNumber;
+        const question = `${firstNumber} ${operator} ${secondNumber}`;
+
+        uiController._answerInput.focus();
+        uiController._answerInput.select();
+        uiController._answerInput.disabled = false;
+        uiController._answerInput.style.border = '2px solid #ccc';
+
+        this.initializeQuestion(question, answer);
+
+
+    }
+    //return a funcition with the type of function to generate
+
+
+    checkAnswer(event) {
+        event.preventDefault();
+        //type of difficulty
+        const gameManager = GameManager.getInstance();
+        const game = gameManager.getGame();
+        const answer = game.getAnswer();
+        const difficulty = game.getDifficulty();
+        const uiController = gameManager._uiController;
+        const playerAnswer = uiController._answerInput.value;
+
+
+
+        // function display
+
+        //check if the player has inputer a answer
+
+        // if (answer === undefined || answer === null) {
+
+
+
+
+
+
+
+
+
+
+
+
+        if (answer === undefined || answer === null) {
+            uiController.clearMessageBoxButtons();
+            uiController.addMessageBoxButton('Generate', () => { uiController.hideMessageBoxUI(), this.checkDifficulty(difficulty) });
+            uiController.displayMessageBox('Error!', 'Please generate a question first.');
             return;
         }
-        game.setAttempt(game.getAttempt() - 1);
-        uiController.clearMessageBoxButtons();
-        uiController.displayMessageBox('Incorrect!', `<p>the correct answer is 
+        if (!playerAnswer) {
+            uiController.clearMessageBoxButtons();
+            uiController.displayMessageBox('', 'Please enter your answer.');
+            uiController.addMessageBoxButton('Close', () => { uiController.hideMessageBoxUI() });
+            uiController._answerInput.focus();
+            uiController._answerInput.select();
+
+            uiController._answerInput.style.border = '1px solid red';
+            uiController._answerInput.disabled = false;
+            return;
+        }
+
+        if (answer == parseInt(playerAnswer) || answer == parseFloat(playerAnswer)) {
+            this.correctAnswer();
+      
+        } 
+        else {
+            if (game.getAttempt() === 1) {
+
+                this.gameOver(playerAnswer);
+                return;
+            }
+
+            game.setAttempt(game.getAttempt() - 1);
+            uiController.clearMessageBoxButtons();
+            uiController.displayMessageBox('Incorrect!', `<p>the correct answer is 
         <span style="color: green;">
         ${answer}.
         </span>
@@ -171,30 +283,233 @@ generateBeginnerQuestion(){
         ${game.getAttempt()}
         </span>
         attempt(s) left.</p>`);
+            uiController.disableCheckAnswerButton();
+            uiController.enableGenerateQuestionButton();
+            uiController.addMessageBoxButton('Generate New Question', () => { uiController.hideMessageBoxUI(), this.checkDifficulty(difficulty) });
+            uiController._answerInput.style.border = '1px solid red';
+            uiController._answerInput.disabled = true;
+            game.addPreviousQuestion([question, answer]);
+
+
+        }
+        uiController.updatePlayerInfo(game.getPlayerName(), game.getScore(), game.getAttempt(), game.getDifficulty());
+    }
+
+    outcomeTimerReward(outcome) {
+        //reward the player for answering the question quickly
+        //if the player answers the question in less than 5 seconds, add 5 seconds to the timer
+        //if the player answers the question in less than 10 seconds, add 3 seconds to the timer
+        //if the player answers the question in less than 15 seconds, add 1 second to the timer
+        //if the player answers the question in more than 15 seconds, do nothing
+        //if the outcome is true, add the seconds to the timer
+        //if the outcome is false, do nothing
+        
+        
+            
+        //clear the interval
+        if (this._timerInterval !== null) {
+            clearInterval(this._timerInterval);
+        }
+        uiController.updateTimer(this._timeTimer);
+    }
+
+    generateIntermediateQuestion() {
+        const gameManager = GameManager.getInstance();
+        const game = GameManager.getInstance().getGame();
+        const uiController = GameManager.getInstance()._uiController;
+        let firstNumber;
+        let secondNumber;
+        let operator;
+        let answer;
+        let questionText;
+        let question;
+
+        do {
+            firstNumber = Math.floor(Math.random() * 100);
+            secondNumber = Math.floor(Math.random() * 100);
+            operator = ['+', '-', '*', '/'][Math.floor(Math.random() * 4)];
+            answer = operator === '+' ? firstNumber + secondNumber : operator === '-' ? firstNumber - secondNumber : operator === '*' ? firstNumber * secondNumber : firstNumber / secondNumber;
+            questionText = `${firstNumber} ${operator} ${secondNumber}`;
+
+            // Check if the answer is a very large or very small number
+        } while (Math.abs(answer) > 1e+20 || Math.abs(answer) < 1e-20);
+
+        // Round the answer to 2 decimal places if it is not an integer and does not end in .00
+        if (!Number.isInteger(answer) && !answer.toFixed(2).endsWith('.00')) {
+            answer = answer.toFixed(2);
+            question = `${questionText}. Round your answer to 2 decimal places.`;
+        } else {
+            question = questionText;
+            answer = Math.round(answer);
+        }
+
+        game.setAnswer(answer);
+        game.setQuestion(question);
+
+
+        uiController._answerInput.focus();
+        uiController._answerInput.select();
+        uiController._answerInput.disabled = false;
+        uiController._answerInput.style.border = '2px solid #ccc';
+
+        this.initializeQuestion(question, answer);
+    }
+
+
+
+    correctAnswer() {
+        const gameManager = GameManager.getInstance();
+        const game = gameManager.getGame();
+        const uiController = gameManager._uiController;
+        game.setScore(game.getScore() + 1);
+        uiController.clearMessageBoxButtons();
+        uiController.displayMessageBox('Correct!', `You got the orrectcorrect answer! <p>score +${1}</p>`);
+        uiController._answerInput.style.border = '1px solid green';
+        uiController._answerInput.disabled = true;
+        uiController.addMessageBoxButton('Generate New Question', () => { uiController.hideMessageBoxUI(), this.checkDifficulty(difficulty) });
+        uiController.updatePlayerInfo(game.getPlayerName(), game.getScore(), game.getAttempt(), game.getDifficulty());
         uiController.disableCheckAnswerButton();
         uiController.enableGenerateQuestionButton();
-        uiController.addMessageBoxButton('Generate New Question', () => { uiController.hideMessageBoxUI(), this.generateBeginnerQuestion(); });  
-
+        game.playerAnswer = playerAnswer;
+        game.addPreviousQuestion([game._question, game._answer, game.playerAnswer]);
     }
-    uiController.updatePlayerInfo(game.getPlayerName(), game.getScore(), game.getAttempt(), game.getDifficulty());
-}
+
+
+    generateAdvancedQuestion() {
+        const gameManager = GameManager.getInstance();
+        const game = GameManager.getInstance().getGame();
+        const uiController = GameManager.getInstance()._uiController;
+        const numbers = [];
+        const operators = [];
+        let answer;
+        let questionText;
+        let question;
+    
+        // Generate a random number of decimal places to which the answer should be rounded
+        const decimalPlaces = Math.floor(Math.random() * 3) + 1;
+    
+        // Function to generate a random operator
+        const getRandomOperator = () => ['+', '-', '*', '/', '**'][Math.floor(Math.random() * 5)];
+    
+        // Function to generate a random number within a range
+        const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    
+        // Function to check if the answer is valid
+        const isValidAnswer = (answer) => Math.abs(answer) <= 1e+20 && Math.abs(answer) >= 1e-20;
+    
+        do {
+            // Generate the numbers
+            for (let i = 0; i < 5; i++) {
+                numbers[i] = i === 4 ? getRandomNumber(0, 10) : getRandomNumber(0, 100);
+            }
+    
+            // Generate the operators
+            for (let i = 0; i < 4; i++) {
+                operators[i] = getRandomOperator();
+            }
+    
+            if (Math.random() < 0.5) {
+                questionText = `((${numbers[0]} ${operators[0]} ${numbers[1]}) ${operators[1]} (${numbers[2]} ${operators[2]} ${numbers[3]})) ${operators[3]} ${numbers[4]}`;
+                answer = Function(`'use strict'; return ${questionText}`)();
+            } else {
+                questionText = `${numbers[0]} ${operators[0]} ((${numbers[1]} ${operators[1]} (${numbers[2]} ${operators[2]} ${numbers[3]})) ${operators[3]} ${numbers[4]})`;
+                answer = Function(`'use strict'; return ${questionText}`)();
+            }
+        } while (!isValidAnswer(answer));
+    
+        // Round the answer to the specified number of decimal places
+            //if the answer ends in .00, remove the decimal places and dont display the decimal places in the question text the number can end in .00 or .0 or .000 depending on the decimalplaces generated
+        if (answer.toFixed(decimalPlaces).endsWith(`.${'0'.repeat(decimalPlaces)}`)) {
+            answer = Math.round(answer);
+            question = questionText;
+        } else {
+
+        
+
+        answer = answer.toFixed(decimalPlaces);
+    
+        // Include the number of decimal places in the question text
+        question = `${questionText}. Round your answer to ${decimalPlaces} decimal places.`;
+
+        }
+       
+        this.initializeQuestion(question, answer);
+    }
+
+
+
+
+
+
+
+
+    initializeQuestion(question, answer) {
+        const gameManager = GameManager.getInstance();
+        const game = gameManager.getGame();
+        const uiController = gameManager._uiController;
+   
+
+        uiController._answerInput.focus();
+        uiController._answerInput.select();
+        uiController._answerInput.disabled = false;
+        uiController._answerInput.style.border = '2px solid #ccc';
+
+    
+        game.setQuestion(question);
+        game.setAnswer(answer);
+        uiController.displayGeneratedQuestion(question);
+        uiController.enableCheckAnswerButton();
+        uiController.disableGenerateQuestionButton();
+        uiController.clearAnswerInput();
+        uiController.hideMessageBoxUI();
+
+        //clear the timer interval if it is not null
+        if (this._timerInterval !== null) {
+            clearInterval(this._timerInterval);
+        }
+
+        //run the timer and update every time the variable is changed the timer belong to this class
+        this._timerInterval = setInterval(() => {
+            uiController.updateTimer(this._timeTimer -= 1);
+        }
+            , 1000);
+
+
+    
+            
+    }
+
+
 }
 
 
-class UiController{
+
+class UiController {
     //start Game UI
     _startGameUI = document.getElementsByClassName('start-game-container')[0];
     _startGameButton = document.getElementById('start-game-button');
     _playerNameInput = document.getElementById('player-name-input');
 
-//question UI
+    //gameView UI
+    _gameViewUI = document.getElementsByClassName('game-view-container')[0];
+
+    //question UI
     _questionUI = document.getElementsByClassName('question-container')[0];
     _question = document.getElementById('question');
     _questionView = document.getElementById('question-view');
     _answerInput = document.getElementById('answer-input');
     _checkAnswerButton = document.getElementById('check-answer-button');
     _generateQuestionButton = document.getElementById('generate-question-button');
-    
+
+    //Player Info UI
+    _playerInfoUI = document.getElementsByClassName('player-info-container')[0];
+    _playerNameTag = document.getElementById('player-name-tag');
+    _playerScoreTag = document.getElementById('player-score-tag');
+    _playerDifficultyTag = document.getElementById('player-difficulty-tag');
+    _playerAttemptTag = document.getElementById('player-attempt-tag');
+    _resetButton = document.getElementById('reset-button');
+    _playerTimeTag = document.getElementById('player-time-tag');
+
     //select difficulty UI
     _selectDifficultyUI = document.getElementsByClassName('select-difficulty-container')[0];
     _selectDifficultyButton = document.getElementById('select-difficulty-button');
@@ -208,18 +523,12 @@ class UiController{
     _messageBoxCloseButton = document.getElementById('close-message-box-button');
     _messageBoxButtons = document.getElementsByClassName('message-box-buttons')[0];
 
-    //Player Info UI
-    _playerInfoUI = document.getElementsByClassName('player-info-container')[0];
-    _playerNameTag = document.getElementById('player-name-tag');
-    _playerScoreTag = document.getElementById('player-score-tag');
-    _playerDifficultyTag = document.getElementById('player-difficulty-tag');
-    _playerAttemptTag = document.getElementById('player-attempt-tag');
-    _resetButton = document.getElementById('reset-button');
+
 
     constructor() {
-          console.log('UI Controller Created');
-        }
-   
+        console.log('UI Controller Created');
+    }
+
 
 
     //start game UI
@@ -229,50 +538,88 @@ class UiController{
     hideStartGameUI() {
         this._startGameUI.style.display = 'none';
     }
-    displayPlayerName(){
+    displayPlayerName() {
         this._playerNameTag.innerHTML = GameManager.getInstance().getGame().getPlayerName();
     }
 
 
-        //question UI
-        displayQuestionUI() {
-            this._questionUI.style.display = 'block';
-        }
-        displayGeneratedQuestion(question) {
-         
-            this._questionView.style.display = 'block';
-           
-            this._question.innerHTML = question;
-        }
-      
+    //question UI
+    // Use async/await to avoid blocking the main thread
+    async displayQuestionUI() {
 
-        hideQuestionUI() {
+        // Use requestAnimationFrame to optimize the animation performance
+        requestAnimationFrame(() => {
+            this._questionUI.style.display = 'block';
+
+        });
+
+        // Use a promise to wait for a specified time
+        await new Promise((resolve) => {
+            this._timeoutId = setTimeout(resolve, 50); // Adjust the delay time as needed (e.g., 10ms)
+        });
+
+        // Use requestAnimationFrame again to apply the style changes
+        requestAnimationFrame(() => {
+            this._questionUI.style.opacity = 1;
+            this._questionUI.style.transform = 'translateY(0)';
+
+            //ease-in-out
+            this._questionUI.style.transition = 'all 0.5s ease-in-out';
+        });
+    }
+    async hideQuestionUI() {
+        requestAnimationFrame(() => {
+            this._questionUI.style.opacity = 0;
+            this._questionUI.style.transform = 'translateY(-100%)';
+            this._questionUI.style.transition = 'all 0.5s ease-in-out';
+        });
+
+        await new Promise((resolve) => {
+            this._timeoutId = setTimeout(resolve, 500);
+        });
+
+        requestAnimationFrame(() => {
             this._questionUI.style.display = 'none';
-        }
-        disableCheckAnswerButton() {
-            this._checkAnswerButton.disabled = true;
-            this._checkAnswerButton.style.cursor = 'not-allowed';
-            this._checkAnswerButton.style.opacity = 0.5;
-            
-        }
-        enableCheckAnswerButton() {
-            this._checkAnswerButton.disabled = false;
-            this._checkAnswerButton.style.cursor = 'pointer';
-            this._checkAnswerButton.style.opacity = 1;
-        }
-        clearAnswerInput() {
-            this._answerInput.value = '';
-        }
-        disableGenerateQuestionButton() {
-            this._generateQuestionButton.disabled = true;
-            this._generateQuestionButton.style.cursor = 'not-allowed';
-            this._generateQuestionButton.style.opacity = 0.5;
-        }
-        enableGenerateQuestionButton() {
-            this._generateQuestionButton.disabled = false;
-            this._generateQuestionButton.style.cursor = 'pointer';
-            this._generateQuestionButton.style.opacity = 1;
-        }
+        });
+    }
+
+
+
+
+
+    displayGeneratedQuestion(question) {
+
+        this._questionView.style.display = 'block';
+
+        this._question.innerHTML = question;
+    }
+
+
+
+    disableCheckAnswerButton() {
+        this._checkAnswerButton.disabled = true;
+        this._checkAnswerButton.style.cursor = 'not-allowed';
+        this._checkAnswerButton.style.opacity = 0.5;
+
+    }
+    enableCheckAnswerButton() {
+        this._checkAnswerButton.disabled = false;
+        this._checkAnswerButton.style.cursor = 'pointer';
+        this._checkAnswerButton.style.opacity = 1;
+    }
+    clearAnswerInput() {
+        this._answerInput.value = '';
+    }
+    disableGenerateQuestionButton() {
+        this._generateQuestionButton.disabled = true;
+        this._generateQuestionButton.style.cursor = 'not-allowed';
+        this._generateQuestionButton.style.opacity = 0.5;
+    }
+    enableGenerateQuestionButton() {
+        this._generateQuestionButton.disabled = false;
+        this._generateQuestionButton.style.cursor = 'pointer';
+        this._generateQuestionButton.style.opacity = 1;
+    }
 
 
     //select difficulty UI
@@ -286,54 +633,46 @@ class UiController{
         this._selectDifficultyUI.style.display = 'none';
     }
     addSelectDifficultyButtonEvent() {
-        const game = GameManager.getInstance().getGame();
-      
-        this._selectDifficultyButton.onclick = () => {
-          const checkedDifficulty = this.difficultyRadioButtons.find(difficulty => difficulty.checked);
-          if (checkedDifficulty) {
+        const gameController = GameManager.getInstance()._gameController;
+        const messageBox = MessageBox.getInstance();
 
-            const startGame = () => {
-              this.hideMessageBoxUI();
-              this.hideSelectDifficultyUI();
-              game.setDifficulty(checkedDifficulty.value);
-              game.setScore(0);
-              game.setAttempt(this.getDifficultyAttempt(checkedDifficulty.value));
-              this.updatePlayerInfo(game.getPlayerName(), game.getScore(), game.getAttempt(), game.getDifficulty());
-              this.displayQuestionUI();
-              this.displayPlayerInfoUI();
-            };
-      
-            this.displayMessageBox('Start the Game', this.getDifficultyTextMessage(checkedDifficulty.value));
-            this.hideMessageBoxCloseButton();
-            this.clearMessageBoxButtons();
-            this.addMessageBoxButton('Start Game', startGame);
-            this.addMessageBoxButton('Cancel', () => this.hideMessageBoxUI());
-          } else {
-            this.displayMessageBox('Error', 'Please select a difficulty level.');
-          }
+        this._selectDifficultyButton.onclick = () => {
+            const checkedDifficulty = this.difficultyRadioButtons.find(difficulty => difficulty.checked);
+            if (checkedDifficulty) {
+                const buttons = [
+                    {text: 'Start',onClick: () => {gameController.setGamemode(checkedDifficulty.value)}},
+                    {text: 'Close',onClick: () => {messageBox.hide();}}
+                ];
+                messageBox.display('Select Difficulty',this.getDifficultyTextMessage(checkedDifficulty.value),buttons);
+            } else {
+                const buttons = [
+                    {text: 'OK',onClick: () => {messageBox.hide();}}
+                ];
+                messageBox.display('Error', 'Please select a difficulty level.',buttons);
+            }
         };
-      }
+    }
     updatePlayerInfo(playerName, score, attempt, difficulty) {
         if (playerName !== null && playerName !== undefined) {
-          this._playerNameTag.innerHTML = "<b>Player Name:</b> " + playerName ;
+            this._playerNameTag.innerHTML = "<b>Player Name:</b> " + playerName;
         }
         if (score !== null && score !== undefined) {
-          this._playerScoreTag.innerHTML = "<b>Score:</b> " + score ;
+            this._playerScoreTag.innerHTML = "<b>Score:</b> " + score;
         }
         if (attempt !== null && attempt !== undefined) {
-          this._playerAttemptTag.innerHTML = "<b>Attempt:</b> " + attempt ;
+            this._playerAttemptTag.innerHTML = "<b>Attempt:</b> " + attempt;
         }
         if (difficulty !== null && difficulty !== undefined) {
-          this._playerDifficultyTag.innerHTML = "<b>Difficulty:</b> " + difficulty ;
+            this._playerDifficultyTag.innerHTML = "<b>Difficulty:</b> " + difficulty;
         }
-      }
+    }
 
-        
+
 
 
     //player info ui Methods
-    setPlayerName(){
-       GameManager.getInstance().getGame().setPlayerName(this._playerNameInput.value);
+    setPlayerName() {
+        GameManager.getInstance().getGame().setPlayerName(this._playerNameInput.value);
     }
     displayPlayerInfoUI() {
         this._playerInfoUI.style.display = 'flex';
@@ -342,9 +681,9 @@ class UiController{
         this._playerInfoUI.style.display = 'none';
     }
 
-    
 
-    
+
+
     //message box UI
     displayMessageBoxUI(title, message) {
         this._messageBoxUI.style.display = 'block';
@@ -359,39 +698,32 @@ class UiController{
         this._messageBoxMessage.innerHTML = message;
     }
     displayMessageBox(title, message) {
-      
+
 
 
         this.setMessageBoxTitle(title);
         this.setMessageBoxMessage(message);
         this.displayMessageBoxUI();
     }
-  
 
     //message box UI and Methods
+    // addMessageBoxButton(buttonText, buttonOnClick) {
+    //     const button = document.createElement('button');
+    //     button.innerHTML = buttonText;
+    //     button.onclick = buttonOnClick;
+    //     this._messageBoxButtons.appendChild(button);
+    // }
+
     addMessageBoxButton(buttonText, buttonOnClick) {
         const button = document.createElement('button');
         button.innerHTML = buttonText;
         button.onclick = buttonOnClick;
-        this._messageBoxButtons.appendChild(button);
+        return button;
     }
+
     clearMessageBoxButtons() {
         this._messageBoxButtons.innerHTML = '';
     }
-
-        //message box close button
-        hideMessageBoxCloseButton() {
-            this._messageBoxCloseButton.style.display = 'none';
-        }
-        showMessageBoxCloseButton() {
-            this._messageBoxCloseButton.style.display = 'block';
-        }
-
-
-
-
-   
-
     getDifficultyTextMessage(difficulty) {
         switch (difficulty) {
             case 'Beginner':
@@ -404,7 +736,7 @@ class UiController{
                 return 'You have selected Expert difficulty. You will have 3 attempt to answer the question correctly.';
             default:
                 throw new Error('Invalid difficulty');
-    
+
         }
     }
     getDifficultyAttempt(difficulty) {
@@ -422,37 +754,129 @@ class UiController{
         }
     }
 
+    //updateTimer
+    updateTimer(time) {
+        this._playerTimeTag.innerHTML = "<b>Time:</b> " + time;
+    }
+
+
+    //messages 
+     //Please Enter your Answer //check answer button
+     //!incorrect the right answer is .. //generate new question
+     //correct you got the correct answer!  generate new question
+     //game Over
+     //start the game
+
+
+    // startTheGameMessage() {
+    //     this.displayMessageBox('Start the Game', this.getDifficultyTextMessage(checkedDifficulty.value));
+
+     
+    // messageBox(message) {
+    //     switch (message) {
+    //         case 'Start the Game':
+
+
+
+
     
 
+}
 
+class MessageBox {
+    title;
+    textMessage;
+    buttons = [];
 
+    _messagebox = document.getElementsByClassName('message-box-container')[0];
+    _messageBoxTitle = document.getElementById('message-box-title');
+    _messageBoxMessage = document.getElementById('message-box-message');
+    _messageBoxButtons = document.getElementsByClassName('message-box-buttons')[0];
 
+    static instance;
 
+    static getInstance() {
+        if (!MessageBox.instance) {
+            MessageBox.instance = new MessageBox();
+        }
+        return MessageBox.instance;
+    }
+    addMessageBoxButton(buttonText, buttonOnClick) {
+        const button = document.createElement('button');
+        button.innerHTML = buttonText;
+        button.onclick = buttonOnClick;
+        return button;
+    }
 
-  
-
-    
+    display(title, textMessage, buttons) {
+        this.title = title;
+        this.textMessage = textMessage;
+        this.buttons = buttons;
+        //add buttons to the messageButtons the input is     [
+                    //     {
+                    //         text: 'OK',
+                    //         onClick: () => {
+                    //             message.hide();
+                    //         }
+                    //     }
+                    // ]
+        this._messageBoxButtons.innerHTML = ''; // Clear all buttons
+        this.buttons.forEach(button => {
+            this._messageBoxButtons.appendChild(this.addMessageBoxButton(button.text, button.onClick));
+        });
  
+        this._messageBoxTitle.innerHTML = this.title;
+        this._messageBoxMessage.innerHTML = this.textMessage;
+        this._messagebox.style.display = 'block';
+    }
+    hide() {
+        this._messagebox.style.display = 'none';
+    }
 }
 
 
+class MessageBoxButton {
+    text;
+    onClick;
+    constructor(text, onClick) {
+        this.text = text;
+        this.onClick = onClick;
+    }
+    getText() {
+        return this.text;
+    }
+    setText(text) {
+        this.text = text;
+    }
+    getOnClick() {
+        return this.onClick;
+    }
+    setOnClick(onClick) {
+        this.onClick = onClick;
+    }
+    click() {
+        this.onClick();
+    }
+}
 
 
 
 class Game {
     attempt;
     score;
+    list_of_questions = [];
     question;
     answer;
+    playerAnswer;
     difficulty;
     playerName;
     constructor(attempt, answer, difficulty, playerName) {
-            this.attempt = attempt;
-            this.answer = answer;
-            this.difficulty = difficulty;
-            this.playerName = playerName;
-          console.log('Game Created');
-        }
+        this.attempt = attempt;
+        this.answer = answer;
+        this.difficulty = difficulty;
+        this.playerName = playerName;
+        console.log('Game Created');
+    }
     getPlayerName() {
         return this._playerName;
     }
@@ -501,7 +925,9 @@ class Game {
         this.setAnswer(null);
     }
 
-
+    addPreviousQuestion(question) {
+        this.list_of_questions.push(question);
+    }
 }
 
 

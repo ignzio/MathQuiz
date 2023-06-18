@@ -14,88 +14,104 @@
     <link rel="stylesheet" href="game-view-container.css" />
     <link rel="stylesheet" href="player-info-container.css" />
     <link rel="stylesheet" href="past-games-container.css" />
+    <link rel="stylesheet" href="in-game-view.css" />
     <link rel=“stylesheet” href=“https://fonts.googleapis.com/css?family=Apple+System|Segoe+UI|Helvetica+Neue|Helvetica|Roboto|Arial|sans-serif|system-ui|Apple+Color+Emoji|Segoe+UI+Emoji”>
 </head>
 
 <body>
-    <h1><span>Math Quiz</span></h1>
-    <div class="player-info-container">
-        <p id="player-name-tag"></p>
-        <p id="player-score-tag"></p>
-        <p id="player-difficulty-tag"></p>
-        <p id="player-attempt-tag"></p>
-        <button id="reset-button"></button>
-    </div>
+
+        <h1><span>Math Quiz</span></h1>
 
 
-    <!--
+
+        <!--
 
 
   -->
-  <div class="start-game-container">
-    <form onsubmit="play(event)" class="">
-        <label for="player-name-input">Enter your name:</label>
-        <input type="text" id="player-name-input" required>
-        <button type="submit">Start New Game</button>
-    </form>
-</div>
+        <div class="start-game-container">
+            <form onsubmit="play(event)" class="">
+                <label for="player-name-input">Enter your name:</label>
+                <input type="text" id="player-name-input" required>
+                <button type="submit">Start New Game</button>
+            </form>
+        </div>
 
-    <!--
+
+
+        <!--
 
     
   -->
-    <div class="select-difficulty-container">
-        <label>Select Difficulty:</label>
-        <div class="difficulty-buttons">
-            <input type="radio" id="beginner" name="difficulty" value="Beginner">
-            <label for="beginner">Beginner</label>
+        <div class="select-difficulty-container">
+            <label>Select Difficulty:</label>
+            <div class="difficulty-buttons">
+                <input type="radio" id="beginner" name="difficulty" value="Beginner">
+                <label for="beginner">Beginner</label>
 
-            <input type="radio" id="intermediate" name="difficulty" value="Intermediate">
-            <label for="intermediate">Intermediate</label>
+                <input type="radio" id="intermediate" name="difficulty" value="Intermediate">
+                <label for="intermediate">Intermediate</label>
 
-            <input type="radio" id="advanced" name="difficulty" value="Advanced">
-            <label for="advanced">Advanced</label>
+                <input type="radio" id="advanced" name="difficulty" value="Advanced">
+                <label for="advanced">Advanced</label>
 
-            <input type="radio" id="expert" name="difficulty" value="Expert">
-            <label for="expert">Expert</label>
+                <input type="radio" id="expert" name="difficulty" value="Expert">
+                <label for="expert">Expert</label>
+            </div>
+            <button id="select-difficulty-button">Select Difficulty</button>
         </div>
-        <button id="select-difficulty-button">Select Difficulty</button>
-    </div>
 
 
-    <!--
+        <!--
 
     
   -->
-    <div class="question-container">
-        <div id="question-view">
-            <p id="question"></p>
-        </div>
+        <div class="game-view-container">
 
-        <form onsubmit="GameManager.getInstance().getGameController().generateQuestion(event)">
-            <button type="submit" id="generate-question-button">Generate Question</button>
-        </form>
-        <form onsubmit="GameManager.getInstance().getGameController().checkAnswer(event)">
+            <div class="player-info-container">
+                <p id="player-name-tag"></p>
+                <p id="player-score-tag"></p>
+                <p id="player-difficulty-tag"></p>
+                <p id="player-attempt-tag"></p>
+                <p id="player-time-tag"></p>
+                <button id="reset-button"></button>
+            </div>
 
-            <input type="number" id="answer-input" placeholder="Your Answer">
-            <button id="check-answer-button" type="submit">Check</button>
-        </form>
-        <p id="result"></p>
-    </div>
+            <div class="question-container">
+                <div id="question-view">
+                    <p id="question"></p>
+                </div>
+                <form onsubmit="GameManager.getInstance().getGameController().generateQuestion(event)">
+                    <button type="submit" id="generate-question-button">Generate Question</button>
+                </form>
+                <form onsubmit="GameManager.getInstance().getGameController().checkAnswer(event)">
+        
+                    <input type="number" step="any"
+                    id="answer-input" placeholder="Your Answer">
+                    <button id="check-answer-button" type="submit">Check</button>
+                </form>
+                <p id="result"></p>
+            </div>
+
+        </div>  
 
 
-    <!--
+     
 
-    modal
-  -->
+
+
+
 
 
 </body>
+<footer class="">
+    <div class="footer-container">
+        <p>Created by </p>
+        <a href="https://www.ignaziogandolfo.dev" target="_blank" rel="noopener noreferrer">Ignazio Gandolfo</a>
+    </div>
+</footer>
 <div class="message-box-container">
     <h2 id="message-box-title"></h2>
     <p id="message-box-message"></p>
-    <button id="close-message-box-button">Close</button>
-
     <div class="message-box-buttons">
 
     </div>
