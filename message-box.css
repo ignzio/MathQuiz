@@ -36,4 +36,8 @@
     background-color: #ff4146;
   }
   
-  .
+  .message-box-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }

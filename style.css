@@ -1,20 +1,55 @@
+@import url('https://fonts.cdnfonts.com/css/baloo');
+:root {
+    --primary-color: #ffc802;
+    --secondary-color: #008fff;
+    --tertiary-color: #ff1493;
+    --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
+        Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
+}
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f3f3f3;
+    background-color: var(--primary-color);
     text-align: center;
-  }
+    font-family: var(--font-body);
+}
 
-  h1 {
-    color: #333;
-  }
+body::after {
+    content: '';
+    background-image: radial-gradient(circle, #e8d907 5%, #ffc802, #f5a208fd);
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
 
-  p {
+}
+
+
+
+
+h1 {
+    font-family: 'Baloo', cursive;
+    
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.75)
+}
+h1 span {
+    text-shadow: 0 0.2em 0.5em rgba(0, 0, 0, 0.5), 0 5px 0 rgba(0, 0, 0, 0.75);
+}
+
+p {
     font-size: 20px;
     margin: 10px 0;
-  }
+}
 
-  button {
+button {
     background-color: #ff5a5f;
     color: #fff;
     border: none;
@@ -24,11 +59,8 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
     margin-top: 10px;
-  }
+}
 
-  button:hover {
+button:hover {
     background-color: #ff4146;
-  }
-
-
-
+}
