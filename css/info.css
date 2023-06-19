@@ -1,0 +1,53 @@
+.info-container{
+    display: none;
+    flex-direction: column;
+    align-items: left;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 90%;
+    order: 2;
+    text-align: left;
+   
+}
+
+.game-info-container{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 90%;
+    order: 2;
+    text-align: left;
+}
+#game-difficulty-tag{display:none}
+#game-timer-tag{display:none}
+#game-stopwatch-tag{display:none}
+
+.player-info-container{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 90%;
+    order: 2;
+    text-align: left;
+
+}
+
+#player-name-tag{display:none}
+#player-score-tag{display:none}
+#player-level-tag{display:none}
+#player-experience-tag{display:none}
+#player-lives-tag{display:none}
+

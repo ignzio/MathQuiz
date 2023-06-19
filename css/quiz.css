@@ -1,0 +1,289 @@
+/* start game */
+.start-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    
+}
+.start-game-container > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.start-game-container > form > input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1.5rem;
+    text-align: center;
+}
+.start-game-container > form > input:focus {
+    outline: none;
+    border-color: #ff5a5f;
+}
+.start-game-container > form > button {
+    background-color: #ff5a5f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.start-game-container > form > button:hover {
+    background-color: #ff4146;
+    transform: scale(1.1);
+}
+
+.start-game-container > form > button:active {
+    transform: scale(0.9);
+}
+.start-game-container > form > label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FF1493;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75);
+}
+
+
+
+
+
+/* select difficulty */
+
+.select-difficulty-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+}
+.select-difficulty-container > label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FF1493;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75);
+}
+.select-difficulty-container > button {
+    background-color: #ff5a5f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+.difficulty-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+.difficulty-buttons > label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FF1493;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75);
+}
+.difficulty-buttons > input {
+    display: none;
+}
+.difficulty-buttons > input[type="radio"] + label {
+    background-color: var( --tertiary-color);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+    color: #fff;
+    border: 1px solid #ff5a5f;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.difficulty-buttons > input[type="radio"] + label:hover {
+    background-color: #ff5a5f;
+    transform: scale(1.1);
+    color: #fff;
+}
+.difficulty-buttons > input[type="radio"] + label:active {
+    transform: scale(0.9);
+}
+
+.difficulty-buttons > input[type="radio"]:checked + label {
+    background-color: #ff5a5f;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transform: scale(0.9);
+    transition: background-color 0.3s;
+}
+
+
+
+
+
+
+
+/* 
+question 
+
+--primary-color: #ffc802;
+    --secondary-color: #008fff;
+    --tertiary-color: #ff1493;
+    --disabled-color: #ccc;
+
+
+    /* #F0F4C3: A light green that represents freshness, growth and harmony.
+
+#FFAB91: A coral pink that represents warmth, comfort and positivity.
+
+#B2EBF2: A light blue that represents calmness, trust and reliability.
+
+#FFF9C4: A light yellow that represents happiness, energy and optimism.
+
+#FF8A65: A bright orange that represents enthusiasm, creativity and fun.
+
+#80DEEA: A turquoise blue that represents clarity, balance and tranquility.
+
+#E1BEE7: A light purple that represents imagination, inspiration and spirituality.
+
+#FFCDD2: A soft red that represents passion, excitement and love.
+
+#81D4FA: A sky blue that represents freedom, intelligence and creativity. */
+/* --question-color: #F0F4C3;
+--answer-color: #FFAB91;
+--correct-color: #B2EBF2;
+--incorrect-color: #FFF9C4;
+ */
+
+
+
+.question-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 30px 90px 0px 90px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+}
+.question-container > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.question-container > form > label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FF1493;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75);
+}
+
+
+.question-container > form > input:disabled {
+    background-color: var(--disabled-color);
+    color: #fff;
+    cursor: not-allowed;
+}
+
+#question-view {
+    
+    background-color: #FF1493;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    transition: background-color 0.3s;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    pointer-events: none;
+    
+}
+#answer-input{ background-color: #fff; color: #000; border: 2px solid #000; border-radius: 5px; padding: 10px 20px; font-size: 1.5rem; transition: border-color 0.3s, transform 0.3s; font-family: ‘Roboto’, sans-serif; font-weight: bold; text-align: center; width: 100%; }
+
+#answer-input:hover { border-color: #00f; }
+
+#answer-input:focus { outline: none; border-color: #0f0; }
+
+#answer-input::placeholder { color: #000; }
+
+#answer-input:disabled { background-color: #808080; color: #fff; }
+
+.correct { border-color: #0f0 !important;
+     animation: correct 1s ease-in-out infinite alternate;
+    }
+.correct:disabled { background-color: #0f0 !important; color: #fff !important;}
+
+.wrong { border-color: #f00 !important; animation: wrong 1s ease-in-out infinite alternate; }
+
+@keyframes correct { from {transform: scale(1);} to {transform: scale(1.2);} }
+
+@keyframes wrong { from {transform: rotate(0deg);} to {transform: rotate(15deg);} }
+
+
+#question-tag{
+    pointer-events: none;
+    user-select: none;
+    font-size: 1.5rem;
+}
+#check-answer-button:disabled:hover {
+    background-color: var(--disabled-color);
+    transform: scale(1);
+    color: #fff;
+}
+#generate-question-button:disabled:hover {
+    background-color: var(--disabled-color);
+    transform: scale(1);
+    color: #fff;
+}
+
+
+
+@media screen and (max-width: 992px) {
+    .start-game-container {
+        font-size: 2rem;
+       
+        
+    }
+    .start-game-container > form{
+        font-size: 3rem;
+        gap: 30px;
+    }
+    .start-game-container > form > label {
+        font-size: 2.5rem;
+    }
+    .start-game-container > form > input {
+        font-size: 3rem;
+     max-width: 100%;
+    }
+
+
+
+    .select-difficulty-container {
+        font-size: 2rem;
+    }
+    .difficulty-buttons > label {
+        font-size: 2rem;
+    }
+    .difficulty-buttons > input[type="radio"] + label {
+        font-size: 2rem;
+    }
+    
+    #question-tag {
+        font-size: 2rem;
+    }
+
+}

@@ -3,6 +3,33 @@
     --primary-color: #ffc802;
     --secondary-color: #008fff;
     --tertiary-color: #ff1493;
+    --disabled-color: #ccc;
+
+
+    /* #F0F4C3: A light green that represents freshness, growth and harmony.
+
+#FFAB91: A coral pink that represents warmth, comfort and positivity.
+
+#B2EBF2: A light blue that represents calmness, trust and reliability.
+
+#FFF9C4: A light yellow that represents happiness, energy and optimism.
+
+#FF8A65: A bright orange that represents enthusiasm, creativity and fun.
+
+#80DEEA: A turquoise blue that represents clarity, balance and tranquility.
+
+#E1BEE7: A light purple that represents imagination, inspiration and spirituality.
+
+#FFCDD2: A soft red that represents passion, excitement and love.
+
+#81D4FA: A sky blue that represents freedom, intelligence and creativity. */
+    --question-color: #F0F4C3;
+    --answer-color: #FFAB91;
+    --correct-color: #B2EBF2;
+    --incorrect-color: #FFF9C4;
+    
+
+
     --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
         Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
 }
@@ -16,13 +43,9 @@ body {
     padding: 0;
     box-sizing: border-box;
     overflow-x: hidden;
-    position: relative;
+    position: absolute;
+    width: 100%;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
 }
 
 body::after {
@@ -54,6 +77,8 @@ h1 {
 h1 span {
     text-shadow: 0 0.2em 0.5em rgba(0, 0, 0, 0.5), 0 5px 0 rgba(0, 0, 0, 0.75);
 }
+
+
 
 p {
     font-size: 20px;
@@ -89,6 +114,10 @@ button:disabled {
     color: #fff;
     cursor: not-allowed;
     transform : scale(1);
+}
+button:active {
+    background-color: #ff4146;
+    transform: scale(0.9);
 }
 
 footer {
@@ -135,4 +164,34 @@ footer a:hover {
     align-items: center;
     gap: 10px;
     margin-top: 20px;
+}
+.other-contatiner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    min-width: 33%;
+    
+}
+
+
+
+@media screen and (max-width: 992px) {
+    body {
+        font-size: 4rem;
+    }
+    h1 {
+        font-size: 7rem;
+    }
+    h1 span {
+        font-size: 6rem;
+    }
+    button {
+        font-size: 2rem;
+    }
+    footer {
+        font-size: 2rem;
+        padding: 0;
+    }
 }

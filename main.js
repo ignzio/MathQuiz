@@ -49,6 +49,7 @@ class GameManager {
             this._uiController.setPlayerName();
             this._uiController.hideStartGameUI();
             this._uiController.displaySelectDifficultyUI();
+
         }
 
 
@@ -79,6 +80,10 @@ class GameController {
     _timerInterval;
     _timeToAnswerTimer = 0;
     _timeToAnswerInterval;
+
+
+
+
     checkDifficulty(difficulty) {
         switch (difficulty) {
             case 'Beginner':
@@ -91,41 +96,22 @@ class GameController {
                 throw new Error('Invalid difficulty level.');
         }
     }
-    gameOver(lastPlayerAnswer) {
+    gameOver(messageBox,lastPlayerAnswer) {
         const gameManager = GameManager.getInstance();
         const game = gameManager.getGame();
         const uiController = gameManager._uiController;
-
-        const answer = game.getAnswer();
-
-        uiController.clearMessageBoxButtons();
-        uiController.addMessageBoxButton('Close', () => {
-            uiController.hideMessageBoxUI();
-        });
-
-        uiController.displayMessageBox('Game Over!', `
-                    Question: ${game.getQuestion()}<br>
-                    your answer:
-                    <p style="color: red;">
-                    ${lastPlayerAnswer}
-                    </p>
-                    <br>
-                    The correct answer was 
-                    <p style="color: green;">
-                    ${answer}
-                    </p>
-                `);
-
+        const message = `oh oh! The Question was ${game.getQuestion()} and your answer was ${lastPlayerAnswer} the correct answer was ${game.getAnswer()}`;
+        // Display game over message
+        const buttons = [{text: 'Close',onClick: () => {messageBox.hide()}}];
+        messageBox.display('Game Over!', message, buttons);
         uiController.hideQuestionUI();
         uiController.displayStartGameUI();
         uiController.hidePlayerInfoUI();
         uiController._question.innerHTML = '';
         uiController.enableGenerateQuestionButton();
-
-
         // Reset Game state
         gameManager._inGame = false;
-        game.resetGame();
+        game.resetGame();//reset game
         return;
     }
 
@@ -173,7 +159,6 @@ class GameController {
         uiManager.hideSelectDifficultyUI();
         uiManager.hideMessageBoxUI();
         uiManager.updateTimer(this._timeTimer);
-
     }
 
 
@@ -218,79 +203,71 @@ class GameController {
         event.preventDefault();
         //type of difficulty
         const gameManager = GameManager.getInstance();
+        const messageBox = MessageBox.getInstance();
         const game = gameManager.getGame();
         const answer = game.getAnswer();
         const difficulty = game.getDifficulty();
         const uiController = gameManager._uiController;
         const playerAnswer = uiController._answerInput.value;
 
+        let buttons;
 
 
         // function display
 
         //check if the player has inputer a answer
 
-        // if (answer === undefined || answer === null) {
-
-
-
-
-
-
-
-
-
-
-
-
         if (answer === undefined || answer === null) {
-            uiController.clearMessageBoxButtons();
-            uiController.addMessageBoxButton('Generate', () => { uiController.hideMessageBoxUI(), this.checkDifficulty(difficulty) });
-            uiController.displayMessageBox('Error!', 'Please generate a question first.');
+            buttons = [{text: 'Generate', onClick: () => { messageBox.hide(), this.checkDifficulty(difficulty) }}];
+            messageBox.display('Error!', 'Please generate a question first.', buttons);
             return;
         }
         if (!playerAnswer) {
-            uiController.clearMessageBoxButtons();
-            uiController.displayMessageBox('', 'Please enter your answer.');
-            uiController.addMessageBoxButton('Close', () => { uiController.hideMessageBoxUI() });
+            buttons = [{text: 'Close', onClick: () => { messageBox.hide() }}];
+            console.log(buttons);
+            messageBox.display('', 'Please enter your answer.', buttons);
             uiController._answerInput.focus();
             uiController._answerInput.select();
-
             uiController._answerInput.style.border = '1px solid red';
             uiController._answerInput.disabled = false;
             return;
         }
-
         if (answer == parseInt(playerAnswer) || answer == parseFloat(playerAnswer)) {
-            this.correctAnswer();
-      
+            buttons = [{text: 'Generate New Question', onClick: () => { messageBox.hide(), this.checkDifficulty(difficulty) }}];
+            messageBox.display('Correct!', 'You got the correct answer.', buttons);
+            game.setScore(game.getScore() + 1);
+            uiController.updatePlayerInfo(game.getPlayerName(), game.getScore(), game.getAttempt(), game.getDifficulty());
+            uiController._answerInput.style.border = '1px solid green';
+            uiController._answerInput.disabled = true;
+            uiController.disableCheckAnswerButton();
+            uiController.enableGenerateQuestionButton();
+            game.playerAnswer = playerAnswer;
+            game.addPreviousQuestion([game._question, game._answer, game.playerAnswer]);
+
         } 
         else {
             if (game.getAttempt() === 1) {
-
-                this.gameOver(playerAnswer);
+                this.gameOver(messageBox, playerAnswer);
                 return;
             }
-
+            buttons = [{text: 'Generate New Question', onClick: () => { messageBox.hide(), this.checkDifficulty(difficulty) }}];
+      
             game.setAttempt(game.getAttempt() - 1);
-            uiController.clearMessageBoxButtons();
-            uiController.displayMessageBox('Incorrect!', `<p>the correct answer is 
-        <span style="color: green;">
-        ${answer}.
-        </span>
-        </p><p>You have 
-        <span style="color: red;">
-        ${game.getAttempt()}
-        </span>
-        attempt(s) left.</p>`);
+            messageBox.display('Incorrect!', `<p>the correct answer is
+            <span style="color: green;">
+            ${answer}.
+            </span>
+            </p><p>You have
+            <span style="color: red;">
+            ${game.getAttempt()}
+            </span>
+            attempt(s) left.</p>`,buttons);
             uiController.disableCheckAnswerButton();
             uiController.enableGenerateQuestionButton();
-            uiController.addMessageBoxButton('Generate New Question', () => { uiController.hideMessageBoxUI(), this.checkDifficulty(difficulty) });
             uiController._answerInput.style.border = '1px solid red';
             uiController._answerInput.disabled = true;
             game.addPreviousQuestion([question, answer]);
-
-
+           
         }
         uiController.updatePlayerInfo(game.getPlayerName(), game.getScore(), game.getAttempt(), game.getDifficulty());
     }
@@ -359,11 +336,13 @@ class GameController {
 
     correctAnswer() {
         const gameManager = GameManager.getInstance();
+        const messageBox = MessageBox.getInstance();
         const game = gameManager.getGame();
         const uiController = gameManager._uiController;
         game.setScore(game.getScore() + 1);
+        uiController.showMessageBoxUI(this._MESSAGES.CORRECT);
         uiController.clearMessageBoxButtons();
-        uiController.displayMessageBox('Correct!', `You got the orrectcorrect answer! <p>score +${1}</p>`);
+        uiController.displayMessageBox('Correct!', );
         uiController._answerInput.style.border = '1px solid green';
         uiController._answerInput.disabled = true;
         uiController.addMessageBoxButton('Generate New Question', () => { uiController.hideMessageBoxUI(), this.checkDifficulty(difficulty) });
@@ -626,21 +605,29 @@ class UiController {
     displaySelectDifficultyUI() {
         this._selectDifficultyUI.style.display = 'block';
         this.addSelectDifficultyButtonEvent();
-        this.hideMessageBoxUI();
+        this.hidisplaydeMessageBoxUI();
 
     }
     hideSelectDifficultyUI() {
         this._selectDifficultyUI.style.display = 'none';
     }
+
     addSelectDifficultyButtonEvent() {
+        /*this function is used to get the difficulty text message
+            to be displayed in the message box
+            when the user selects a difficulty level
+            and clicks the start button
+            the message box will display the difficulty text message
+            and the user can click the start button to start the game
+            or click the close button to close the message box
+        and select another difficulty level*/
         const gameController = GameManager.getInstance()._gameController;
         const messageBox = MessageBox.getInstance();
-
         this._selectDifficultyButton.onclick = () => {
             const checkedDifficulty = this.difficultyRadioButtons.find(difficulty => difficulty.checked);
             if (checkedDifficulty) {
                 const buttons = [
-                    {text: 'Start',onClick: () => {gameController.setGamemode(checkedDifficulty.value)}},
+                    {text: 'Start',onClick: () => {gameController.setGamemode(checkedDifficulty.value),this.setPlayerName()}},
                     {text: 'Close',onClick: () => {messageBox.hide();}}
                 ];
                 messageBox.display('Select Difficulty',this.getDifficultyTextMessage(checkedDifficulty.value),buttons);
@@ -652,6 +639,7 @@ class UiController {
             }
         };
     }
+
     updatePlayerInfo(playerName, score, attempt, difficulty) {
         if (playerName !== null && playerName !== undefined) {
             this._playerNameTag.innerHTML = "<b>Player Name:</b> " + playerName;
@@ -706,13 +694,7 @@ class UiController {
         this.displayMessageBoxUI();
     }
 
-    //message box UI and Methods
-    // addMessageBoxButton(buttonText, buttonOnClick) {
-    //     const button = document.createElement('button');
-    //     button.innerHTML = buttonText;
-    //     button.onclick = buttonOnClick;
-    //     this._messageBoxButtons.appendChild(button);
-    // }
+
 
     addMessageBoxButton(buttonText, buttonOnClick) {
         const button = document.createElement('button');
@@ -754,27 +736,14 @@ class UiController {
         }
     }
 
+
+            
+
+
     //updateTimer
     updateTimer(time) {
         this._playerTimeTag.innerHTML = "<b>Time:</b> " + time;
     }
-
-
-    //messages 
-     //Please Enter your Answer //check answer button
-     //!incorrect the right answer is .. //generate new question
-     //correct you got the correct answer!  generate new question
-     //game Over
-     //start the game
-
-
-    // startTheGameMessage() {
-    //     this.displayMessageBox('Start the Game', this.getDifficultyTextMessage(checkedDifficulty.value));
-
-     
-    // messageBox(message) {
-    //     switch (message) {
-    //         case 'Start the Game':
 
 
 
@@ -812,22 +781,16 @@ class MessageBox {
         this.title = title;
         this.textMessage = textMessage;
         this.buttons = buttons;
-        //add buttons to the messageButtons the input is     [
-                    //     {
-                    //         text: 'OK',
-                    //         onClick: () => {
-                    //             message.hide();
-                    //         }
-                    //     }
-                    // ]
+
         this._messageBoxButtons.innerHTML = ''; // Clear all buttons
         this.buttons.forEach(button => {
             this._messageBoxButtons.appendChild(this.addMessageBoxButton(button.text, button.onClick));
         });
+        console.log(this._messageBoxButtons);
  
         this._messageBoxTitle.innerHTML = this.title;
         this._messageBoxMessage.innerHTML = this.textMessage;
-        this._messagebox.style.display = 'block';
+        this._messagebox.style.display = 'flex';
     }
     hide() {
         this._messagebox.style.display = 'none';
@@ -919,10 +882,6 @@ class Game {
     resetGame() {
         GameManager.getInstance()._previousGames.push(this);
         console.log(GameManager.getInstance()._previousGames);
-        this.setAttempt(0);
-        this.setScore(0);
-        this.setQuestion(null);
-        this.setAnswer(null);
     }
 
     addPreviousQuestion(question) {

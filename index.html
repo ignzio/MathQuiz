@@ -3,47 +3,79 @@
 
 <head>
     <title>Math Quiz</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
-    <script src="main.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script> -->
+    <script src="main2.js"></script>
     <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="select-difficulty-container.css" />
-    <link rel="stylesheet" href="question-container.css" />
-    <link rel="stylesheet" href="start-game-container.css" />
-    <link rel="stylesheet" href="answer-container.css" />
-    <link rel="stylesheet" href="message-box.css" />
-    <link rel="stylesheet" href="game-view-container.css" />
-    <link rel="stylesheet" href="player-info-container.css" />
-    <link rel="stylesheet" href="past-games-container.css" />
-    <link rel="stylesheet" href="in-game-view.css" />
-    <link rel=“stylesheet” href=“https://fonts.googleapis.com/css?family=Apple+System|Segoe+UI|Helvetica+Neue|Helvetica|Roboto|Arial|sans-serif|system-ui|Apple+Color+Emoji|Segoe+UI+Emoji”>
+
+    
+    <link rel="stylesheet" href="css/game-view.css" />
+    <link rel="stylesheet" href="css/past-games.css" />
+    <link rel="stylesheet" href="css/info.css" />
+    <link rel="stylesheet" href="css/quiz.css" />
+    <link rel="stylesheet" href="css/message-box.css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
 
-        <h1><span>Math Quiz</span></h1>
+
+    <!-- 3 columns -->
+    <!-- player info-->
+    <!-- question -->
+    <!-- other -->
+    <div class="game-view">
+
+    <div class="first-row">
+
+        <div class="info-container">
+            <div class="game-info-container">
+                <p id="game-difficulty-tag"></p>
+                <p id="game-timer-tag"></p>
+                <p id="game-stopwatch-tag"></p>
+            </div>
+            <div class="player-info-container">
+                <p id="player-name-tag"></p>
+                <p id="player-score-tag"></p>
+                <p id="player-level-tag"></p>
+                <p id="player-experience-tag"></p>
+                <p id="player-lives-tag"></p>
+            </div>
+          
+        </div>
 
 
+        <div class="past-games-container">
+            <div class="past-games-title-container">
+                <h2>Past Games</h2>
+            </div>
+            <div class="past-games-list-container">
+                <ul id="past-games-list">
+                </ul>
+            </div>
 
-        <!--
+        </div>
 
+    </div>
 
-  -->
+    <div class="second-row">
+        <div class="title-container">
+            <div></div>
+            <h1><span>Math Quiz</span></h1>
+            <div></div>
+        </div>
+
         <div class="start-game-container">
             <form onsubmit="play(event)" class="">
-                <label for="player-name-input">Enter your name:</label>
+                <label for="player-name-input">Enter your name</label>
                 <input type="text" id="player-name-input" required>
                 <button type="submit">Start New Game</button>
             </form>
         </div>
 
-
-
-        <!--
-
-    
-  -->
         <div class="select-difficulty-container">
-            <label>Select Difficulty:</label>
+            <label>Choose Difficulty:</label>
             <div class="difficulty-buttons">
                 <input type="radio" id="beginner" name="difficulty" value="Beginner">
                 <label for="beginner">Beginner</label>
@@ -57,51 +89,35 @@
                 <input type="radio" id="expert" name="difficulty" value="Expert">
                 <label for="expert">Expert</label>
             </div>
-            <button id="select-difficulty-button">Select Difficulty</button>
+            <button id="select-difficulty-button">Confirm</button>
         </div>
 
+        <div class="question-container">
+            <div id="question-view">
+                <span id="question-tag">Generate a question to start playing!
 
-        <!--
-
-    
-  -->
-        <div class="game-view-container">
-
-            <div class="player-info-container">
-                <p id="player-name-tag"></p>
-                <p id="player-score-tag"></p>
-                <p id="player-difficulty-tag"></p>
-                <p id="player-attempt-tag"></p>
-                <p id="player-time-tag"></p>
-                <button id="reset-button"></button>
+                </span>
             </div>
+         
+            <form onsubmit="GameController.getInstance().checkAnswer(event)">
 
-            <div class="question-container">
-                <div id="question-view">
-                    <p id="question"></p>
-                </div>
-                <form onsubmit="GameManager.getInstance().getGameController().generateQuestion(event)">
-                    <button type="submit" id="generate-question-button">Generate Question</button>
-                </form>
-                <form onsubmit="GameManager.getInstance().getGameController().checkAnswer(event)">
-        
-                    <input type="number" step="any"
-                    id="answer-input" placeholder="Your Answer">
-                    <button id="check-answer-button" type="submit">Check</button>
-                </form>
-                <p id="result"></p>
-            </div>
+                <input type="number" step="any" id="answer-input" placeholder="Your Answer" required>
+                <button id="check-answer-button" type="submit">Check</button>
+            </form>
+            <form onsubmit="GameController.getInstance().generateQuestion(event)">
+                <button type="submit" id="generate-question-button">Generate Question</button>
+            </form>
+            <p id="result"></p>
+        </div>
 
-        </div>  
+        <div class="bottom-extra-second-row"></div>
 
 
-     
+    </div>
 
 
-
-
-
-
+    <div class="third-row"></div>
+</div>  
 </body>
 <footer class="">
     <div class="footer-container">

@@ -1,0 +1,69 @@
+.game-view {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+}
+.game-view > .first-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50%;
+}
+.game-view > .second-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100vh;
+    }
+
+.game-view > .second-row > :first-child {
+    margin-bottom: 50px;
+}
+
+.game-view > .third-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50%;
+}
+.bottom-extra-second-row{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 20%;
+    
+}
+@media screen and (max-width: 992px) {
+    .game-view {
+        flex-direction: column;
+        justify-content: space-evenly;
+        min-height: 100vh;
+        order: 0;
+    }
+    .game-view > .first-row {
+        flex-direction: column;
+        order: 2;
+
+    }
+    .game-view > .second-row {
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        order: 0;
+    }
+    .game-view > .third-row {
+        flex-direction: column;
+        order: 0;
+    }
+  }
