@@ -17,6 +17,7 @@ class GameManager {
     _currentPlayer;
     _currentGame;
     _timer = 0;
+    _pastGames = [];
     static getInstance() {
         if (GameManager.instance == null) {
             GameManager.instance = new GameManager();
@@ -57,6 +58,8 @@ class GameManager {
         UIManagerInstance._playerAnswerInput.disabled = true;
         UIManagerInstance._generateQuestionButton.disabled = false;
     }
+
+    //TODO: add the game to the past games
 
 
 }
@@ -168,8 +171,8 @@ class GameController {
 
             //check if the player has no more life
             if (currentPlayer.life < 0) {
-                //game over cleanup 
-                
+                //TODO: Game Over
+
               
             }
 

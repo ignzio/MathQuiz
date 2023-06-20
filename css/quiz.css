@@ -81,38 +81,43 @@
 
 
 .difficulty-buttons {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
+
 .difficulty-buttons > label {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #FF1493;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #FF1493;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75);
 }
+
 .difficulty-buttons > input {
-    display: none;
+  display: none;
 }
+
 .difficulty-buttons > input[type="radio"] + label {
-    background-color: var( --tertiary-color);
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
-    color: #fff;
-    border: 1px solid #ff5a5f;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  background-color: var(--tertiary-color);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+  color: #fff;
+  border: 1px solid #ff5a5f;
+  border-radius: 5px;
+  padding: 15px 25px; /* Added padding to make the button clickable at the edge */
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
+
 .difficulty-buttons > input[type="radio"] + label:hover {
-    background-color: #ff5a5f;
-    transform: scale(1.1);
-    color: #fff;
+  background-color: #ff5a5f;
+  transform: scale(1.1);
+  color: #fff;
 }
+
 .difficulty-buttons > input[type="radio"] + label:active {
-    transform: scale(0.9);
+  transform: scale(0.9);
 }
 
 .difficulty-buttons > input[type="radio"]:checked + label {
@@ -133,38 +138,6 @@
 
 
 
-
-/* 
-question 
-
---primary-color: #ffc802;
-    --secondary-color: #008fff;
-    --tertiary-color: #ff1493;
-    --disabled-color: #ccc;
-
-
-    /* #F0F4C3: A light green that represents freshness, growth and harmony.
-
-#FFAB91: A coral pink that represents warmth, comfort and positivity.
-
-#B2EBF2: A light blue that represents calmness, trust and reliability.
-
-#FFF9C4: A light yellow that represents happiness, energy and optimism.
-
-#FF8A65: A bright orange that represents enthusiasm, creativity and fun.
-
-#80DEEA: A turquoise blue that represents clarity, balance and tranquility.
-
-#E1BEE7: A light purple that represents imagination, inspiration and spirituality.
-
-#FFCDD2: A soft red that represents passion, excitement and love.
-
-#81D4FA: A sky blue that represents freedom, intelligence and creativity. */
-/* --question-color: #F0F4C3;
---answer-color: #FFAB91;
---correct-color: #B2EBF2;
---incorrect-color: #FFF9C4;
- */
 
 
 
