@@ -51,3 +51,43 @@
 #player-experience-tag{display:none}
 #player-lives-tag{display:none}
 
+@media screen and (max-width: 992px) {
+
+    .info-container{
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+        background-color: #fff;
+        /*rewrite all the above TO 0*/
+        order: 1;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+        text-align: center;
+        flex-direction: row;
+
+    }
+    .game-info-container{
+        /*rewrite all the above TO 0*/
+        order: 1;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+        text-align: center;
+
+    }
+    .player-info-container{
+        /*rewrite all the above TO 0*/
+        order: 1;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+        text-align: center;
+
+    }
+}

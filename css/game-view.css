@@ -62,6 +62,11 @@
         height: 100%;
         order: 0;
     }
+
+    .game-view > .second-row > :first-child {
+        margin-bottom: 0px;
+    }
+
     .game-view > .third-row {
         flex-direction: column;
         order: 0;

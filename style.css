@@ -128,7 +128,7 @@ footer {
     padding: 20px;
     
     color: #fff;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75)
+    text-shadow: 0 3px 0px rgba(0, 0, 0, 1)
 
 }
 footer a {
@@ -137,7 +137,7 @@ footer a {
     font-family: 'Baloo', cursive;
     font-size: 1.2rem;
     text-decoration: underline;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75)
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 1)
 }
 footer p{
     font-family: 'Baloo', cursive;
