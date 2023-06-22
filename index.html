@@ -4,7 +4,7 @@
 <head>
     <title>Math Quiz</title>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script> -->
-    <script src="main3.js"></script>
+    <script src="main.js"></script>
     <link rel="stylesheet" href="style.css" />
 
     <link rel="stylesheet" href="css/debug-container.css" />
@@ -16,6 +16,8 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.2/math.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5492932938811308"
+        crossorigin="anonymous"></script>
 
 </head>
 
@@ -28,95 +30,95 @@
     <!-- other -->
     <div class="game-view">
 
-    <div class="first-row">
+        <div class="first-row">
 
-        <div class="info-container">
-            <div class="game-info-container">
-                <p id="game-difficulty-tag"></p>
-                <p id="game-timer-tag"></p>
-                <p id="game-stopwatch-tag"></p>
-                <p id="game-strike-tag"></p>
-            </div>
-            <div class="player-info-container">
-                <p id="player-name-tag"></p>
-                <p id="player-score-tag"></p>
-                <p id="player-level-tag"></p>
-                <p id="player-experience-tag"></p>
-                <p id="player-lives-tag"></p>
-            </div>
-        </div>
-
-
-        <div class="past-games-container">
-            <div class="past-games-title-container">
-                <h2>Past Games</h2>
-            </div>
-            <div class="past-games-list-container">
-                <ul id="past-games-list">
-                </ul>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="second-row">
-        <div class="title-container">
-            <div></div>
-            <h1><span>Math Quiz</span></h1>
-            <div></div>
-        </div>
-
-        <div class="start-game-container">
-            <form id="startNewGame">
-                <label for="player-name-input">Enter your name</label>
-                <input type="text" id="player-name-input" required>
-                <button type="submit">Start Game</button>
-            </form>
-        
-        </div>
-
-        <div class="select-difficulty-container">
-            <label>Choose Difficulty:</label>
-            <div class="difficulty-buttons">
-                <input type="radio" id="beginner" name="difficulty" value="Beginner">
-                <label for="beginner">Beginner</label>
-                
-                <input type="radio" id="intermediate" name="difficulty" value="Intermediate">
-                <label for="intermediate">Intermediate</label>
-                
-                <input type="radio" id="advanced" name="difficulty" value="Advanced">
-                <label for="advanced">Advanced</label>
-                
-                <input type="radio" id="expert" name="difficulty" value="Expert">
-                <label for="expert">Expert</label>
-              </div>
-              
-            <button id="select-difficulty-button">Confirm</button>
-        </div>
-
-        <div class="question-container">
-            <div id="question-view">
-                <span id="question-tag">Click Generate Button!
-
-                </span>
-            </div>
-         
-            <form onsubmit="" class="answer-form">
-                
-                <input type="number" step="any" placeholder="Enter your answer" id="answer-input" required>
-                <div class="answer-buttons">
-                <button id="check-answer-button" type="submit">Submit</button>
-                <button id="generate-question-button" type="button">Generate</button>
+            <div class="info-container">
+                <div class="game-info-container">
+                    <p id="game-difficulty-tag"></p>
+                    <p id="game-timer-tag"></p>
+                    <p id="game-stopwatch-tag"></p>
+                    <p id="game-strike-tag"></p>
                 </div>
-            </form>
+                <div class="player-info-container">
+                    <p id="player-name-tag"></p>
+                    <p id="player-score-tag"></p>
+                    <p id="player-level-tag"></p>
+                    <p id="player-experience-tag"></p>
+                    <p id="player-lives-tag"></p>
+                </div>
             </div>
-     
+
+
+            <div class="past-games-container">
+                <div class="past-games-title-container">
+                    <h2>Past Games</h2>
+                </div>
+                <div class="past-games-list-container">
+                    <ul id="past-games-list">
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="second-row">
+            <div class="title-container">
+                <div></div>
+                <h1><span>Math Quiz</span></h1>
+                <div></div>
+            </div>
+
+            <div class="start-game-container">
+                <form id="startNewGame">
+                    <label for="player-name-input">Enter your name</label>
+                    <input type="text" id="player-name-input" required>
+                    <button type="submit">Start Game</button>
+                </form>
+
+            </div>
+
+            <div class="select-difficulty-container">
+                <label>Choose Difficulty:</label>
+                <div class="difficulty-buttons">
+                    <input type="radio" id="beginner" name="difficulty" value="Beginner">
+                    <label for="beginner">Beginner</label>
+
+                    <input type="radio" id="intermediate" name="difficulty" value="Intermediate">
+                    <label for="intermediate">Intermediate</label>
+
+                    <input type="radio" id="advanced" name="difficulty" value="Advanced">
+                    <label for="advanced">Advanced</label>
+
+                    <input type="radio" id="expert" name="difficulty" value="Expert">
+                    <label for="expert">Expert</label>
+                </div>
+
+                <button id="select-difficulty-button">Confirm</button>
+            </div>
+
+            <div class="question-container">
+                <div id="question-view">
+                    <span id="question-tag">Click Generate Button!
+
+                    </span>
+                </div>
+
+                <form onsubmit="" class="answer-form">
+
+                    <input type="number" step="any" placeholder="Enter your answer" id="answer-input" required>
+                    <div class="answer-buttons">
+                        <button id="check-answer-button" type="submit">Submit</button>
+                        <button id="generate-question-button" type="button">Generate</button>
+                    </div>
+                </form>
+            </div>
+
 
             <p id="result"></p>
         </div>
 
-       
+
 
 
 
@@ -129,20 +131,28 @@
                     <button id="start-game">Start game</button>
                 </div>
             </div>
-    
+
         </div>
 
     </div>
 
 
-    
-</div>  
+
+    </div>
 </body>
 <footer class="">
     <div class="footer-container">
         <p>Created by </p>
         <a href="https://www.ignaziogandolfo.dev" target="_blank" rel="noopener noreferrer">Ignazio Gandolfo</a>
     </div>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456"
+        crossorigin="anonymous"></script>
+    <!-- Homepage Leaderboard -->
+    <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px"
+        data-ad-client="ca-pub-1234567890123456" data-ad-slot="1234567890"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 </footer>
 <div class="message-box-container">
     <h2 id="message-box-title"></h2>
