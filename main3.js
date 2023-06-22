@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     UIMANAGER = UiManager.getInstance();
     GAMEMANAGER = GameManager.getInstance();
     GAMEMANAGER.setGameController(new GameController());
-    GAMEMANAGER.debugMode = true;
+    GAMEMANAGER.debugMode = false;
 
     //debug mode
     if(GAMEMANAGER.debugMode){
