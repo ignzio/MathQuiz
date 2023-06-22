@@ -4,10 +4,10 @@
 <head>
     <title>Math Quiz</title>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script> -->
-    <script src="main2.js"></script>
+    <script src="main3.js"></script>
     <link rel="stylesheet" href="style.css" />
 
-    
+    <link rel="stylesheet" href="css/debug-container.css" />
     <link rel="stylesheet" href="css/game-view.css" />
     <link rel="stylesheet" href="css/past-games.css" />
     <link rel="stylesheet" href="css/info.css" />
@@ -34,6 +34,7 @@
                 <p id="game-difficulty-tag"></p>
                 <p id="game-timer-tag"></p>
                 <p id="game-stopwatch-tag"></p>
+                <p id="game-strike-tag"></p>
             </div>
             <div class="player-info-container">
                 <p id="player-name-tag"></p>
@@ -42,7 +43,6 @@
                 <p id="player-experience-tag"></p>
                 <p id="player-lives-tag"></p>
             </div>
-          
         </div>
 
 
@@ -67,11 +67,12 @@
         </div>
 
         <div class="start-game-container">
-            <form onsubmit="play(event)" class="">
+            <form id="startNewGame">
                 <label for="player-name-input">Enter your name</label>
                 <input type="text" id="player-name-input" required>
-                <button type="submit">Start New Game</button>
+                <button type="submit">Start Game</button>
             </form>
+        
         </div>
 
         <div class="select-difficulty-container">
@@ -100,24 +101,40 @@
                 </span>
             </div>
          
-            <form onsubmit="GameController.getInstance().checkAnswer(event)">
+            <form onsubmit="" class="answer-form">
+                
+                <input type="number" step="any" placeholder="Enter your answer" id="answer-input" required>
+                <div class="answer-buttons">
+                <button id="check-answer-button" type="submit">Submit</button>
+                <button id="generate-question-button" type="button">Generate</button>
+                </div>
+            </form>
+            </div>
+     
 
-                <input type="number" step="any" id="answer-input" placeholder="Your Answer" required>
-                <button id="check-answer-button" type="submit">Check</button>
-            </form>
-            <form onsubmit="GameController.getInstance().generateQuestion(event)">
-                <button type="submit" id="generate-question-button">Generate Question</button>
-            </form>
             <p id="result"></p>
         </div>
 
-        <div class="bottom-extra-second-row"></div>
+       
 
+
+
+        <div class="third-row">
+
+            <div class="debug-container">
+                <div class="debug-options-container">
+                    <button id="clear-data-button">clear-data</button>
+                    <button id="reload-page-button">reload-page</button>
+                    <button id="start-game">Start game</button>
+                </div>
+            </div>
+    
+        </div>
 
     </div>
 
 
-    <div class="third-row"></div>
+    
 </div>  
 </body>
 <footer class="">

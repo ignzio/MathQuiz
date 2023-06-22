@@ -52,3 +52,27 @@
     color : chartreuse;
     text-shadow: 0 3px 0 rgba(0, 0, 0, 0.75)
 }
+
+.wrong-text{
+    color : red;
+    font-family: 'Baloo', cursive;
+    font-size: 4rem;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.75)
+}
+
+@media screen and (max-width: 992px) {
+    .message-box-container {
+        gap: 20px;
+        justify-content: start !important;
+    }
+
+    .message-box-buttons {
+        flex-direction: column;
+        gap: 50px;
+
+
+    }
+    .message-box-buttons > button {
+        width: 50%;
+    }
+}

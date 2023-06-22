@@ -1,0 +1,31 @@
+.debug-container{
+    display: none;
+    flex-direction: column;
+    align-items: left;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 60%;
+    height: 90vh;
+    justify-content: center;
+    padding: 5%;
+    order: 2;
+    text-align: left;
+   
+}
+.debug-options-container{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 4%;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 90%;
+    order: 2;
+    text-align: left;
+
+}

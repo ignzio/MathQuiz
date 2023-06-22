@@ -14,10 +14,11 @@ function play(e) {
 // MessageButtons  
 class GameManager {
     static instance;
-    _currentPlayer;
     _currentGame;
     _timer = 0;
     _pastGames = [];
+    _currentPlayer;
+    _uiManager = UIManager.getInstance();
     static getInstance() {
         if (GameManager.instance == null) {
             GameManager.instance = new GameManager();
@@ -27,6 +28,14 @@ class GameManager {
     setCurrentPlayer(player) {
         this._currentPlayer = player;
     }
+    addGameToPastGames(game) {
+        this._pastGames.push(game);
+    }
+    deleteCurrentGame() {
+        this._currentGame = null;
+    }
+    
+
     startGame(difficulty) {
         switch (difficulty) {
             case 'Beginner':
@@ -44,23 +53,33 @@ class GameManager {
             default:
                 throw new Error('Invalid difficulty');
         }
+    
+        
+      
 
-        this._currentGame = new Game(difficulty, this._currentPlayer, this._timer);
-        const UIManagerInstance = UIManager.getInstance();
-        UIManagerInstance.hideSelectDifficultyUI();
-        UIManagerInstance.showQuestionUI();
-        UIManagerInstance.showInfoUI();
-        UIManagerInstance.showPlayerInfoUI(this._currentPlayer);
-        UIManagerInstance.showGameInfoUI(this._currentGame);
-        UIManagerInstance.showTimerUI(this._timer);
-        UIManagerInstance.showStopWatchUI(0.0);
-        UIManagerInstance._checkAnswerButton.disabled = true;
-        UIManagerInstance._playerAnswerInput.disabled = true;
-        UIManagerInstance._generateQuestionButton.disabled = false;
+    }
+    saveGamesToLocalStorage() {
+
+      const pastGames = this._pastGames.map((game) => ({
+            difficulty: game._difficulty,
+            player: game._player,
+            score: game._score,
+            time: game._time,
+        }));
+        const pastGamesJSON = JSON.stringify(pastGames);
+        localStorage.setItem('pastGames', pastGamesJSON);
+
+    }
+    loadGamesFromLocalStorage() {
+        const pastGamesJSON = localStorage.getItem('pastGames');
+        const pastGames = JSON.parse(pastGamesJSON);
+        this._pastGames = pastGames;
     }
 
-    //TODO: add the game to the past games
 
+    deleteCurrentUser() {
+        this._currentPlayer = null;
+    }
 
 }
 
@@ -78,7 +97,7 @@ class GameController {
     }
     checkAnswer(event) {
         event.preventDefault();
-   
+
 
         //if the user input is not empty or null or undefined
         const playerAnswer = this._uiManager._playerAnswerInput.value;
@@ -98,8 +117,8 @@ class GameController {
         const currentAnswer = currentGame.currentAnswer;
         const currentGameDifficulty = currentGame.difficulty;
 
-     
-     
+
+
         //check if the player answer is correct
         if (parseInt(playerAnswer) == currentAnswer || parseFloat(playerAnswer) == currentAnswer) {
             //calculate the reward
@@ -116,7 +135,7 @@ class GameController {
                 text: "OK", onclick: () => {
                     this._messageBox.hide();
                     currentPlayer.increaseScore(reward);
-                    this._uiManager._playerAnswerInput.classList.remove('correct'); 
+                    this._uiManager._playerAnswerInput.classList.remove('correct');
                 }
             }];
             this._messageBox.display("", textMessage, buttons); //display the message box
@@ -126,7 +145,7 @@ class GameController {
             currentGame.stopStopWatch();
             currentGame.increaseStrike();
 
-          
+
             currentGame.addTime(extraTime);
 
 
@@ -137,9 +156,42 @@ class GameController {
             this._uiManager._checkAnswerButton.disabled = true;
             this._uiManager._generateQuestionButton.disabled = false;
 
-         
+
         }
         else {
+            //remove 1 life from the player
+            currentPlayer.decreaseLife();
+      
+            //check if the player has no more life
+            if (currentPlayer._lives < 0) {
+                //TODO: Game Over
+                
+                const textMessage = `
+                <h2 class="wrong-text"><span>Game Over!<span></h2>
+                <span style="color:crimson">You have no more life</span>
+                `;
+                const buttons = [{
+                    text: "OK", onclick: () => {
+                        this._messageBox.hide();
+                        currentGame.gameOver();
+                    }
+                }];
+                this._messageBox.display("", textMessage, buttons); //display the message box
+                currentGame.stopTimer();
+                currentGame.stopStopWatch();
+
+
+
+                this._uiManager._playerAnswerInput.classList.remove('wrong');
+                this._uiManager._playerAnswerInput.classList.remove('correct');
+                this._uiManager._playerAnswerInput.classList.add('wrong');
+                this._uiManager._playerAnswerInput.disabled = true;
+                this._uiManager._checkAnswerButton.disabled = true;
+                this._uiManager._generateQuestionButton.disabled = false;
+
+                return;
+            }
+
             const textMessage = `
             <h2 class="wrong-text"><span>Wrong Answer<span></h2>
             <span style="color:crimson">-1 life</span>
@@ -157,8 +209,7 @@ class GameController {
             currentGame.stopStopWatch();
             currentGame.resetStrike();
 
-            //remove 1 life from the player
-            currentPlayer.decreaseLife();
+
 
 
             this._uiManager._playerAnswerInput.classList.remove('wrong');
@@ -169,76 +220,71 @@ class GameController {
             this._uiManager._generateQuestionButton.disabled = false;
 
 
-            //check if the player has no more life
-            if (currentPlayer.life < 0) {
-                //TODO: Game Over
 
-              
-            }
 
         }
     }
 
     calculateRewards(difficulty, stopWatch) {
         const rewards = {
-          "Beginner": 10,
-          "Intermediate": 20,
-          "Advanced": 30,
-          "Expert": 40
+            "Beginner": 10,
+            "Intermediate": 20,
+            "Advanced": 30,
+            "Expert": 40
         }
         const multiplier = {
-          "Beginner": 1,
-          "Intermediate": 2,
-          "Advanced": 3,
-          "Expert": 4
+            "Beginner": 1,
+            "Intermediate": 2,
+            "Advanced": 3,
+            "Expert": 4
         }
         const stopWatchMultiplier = {
-          35: 0.8,
-          30: 1,
-          25: 1.75,
-          20: 2.5,
-          15: 3.25,
-          10: 4,
+            35: 0.8,
+            30: 1,
+            25: 1.75,
+            20: 2.5,
+            15: 3.25,
+            10: 4,
         };
-        
+
         stopWatch = Math.round(stopWatch);
-        
+
         const timeValues = Object.keys(stopWatchMultiplier);
-        
+
         let minTimeValue = timeValues.find((time) => time >= stopWatch);
-        
+
         if (!minTimeValue) {
-          minTimeValue = timeValues[timeValues.length - 1];
+            minTimeValue = timeValues[timeValues.length - 1];
         }
-        
+
         const minMultiplier = stopWatchMultiplier[minTimeValue];
-        
+
         const result = stopWatch * minMultiplier;
-        
+
         let reward = rewards[difficulty] * multiplier[difficulty] * minMultiplier;
-        
+
         // Introduce randomness to the reward calculation using one of four famous sequences
         const sequences = [
-          [0,1,1,2,3,5,8,13], // Fibonacci sequence
-          [2,1,3,4,7,11,18], // Lucas sequence
-          [1,-1,-2,-1,-3,-2,-4], // Pell sequence
-          [1,-2,-5,-7,-12,-17] // Jacobsthal sequence
+            [0, 1, 1, 2, 3, 5, 8, 13], // Fibonacci sequence
+            [2, 1, 3, 4, 7, 11, 18], // Lucas sequence
+            [1, -1, -2, -1, -3, -2, -4], // Pell sequence
+            [1, -2, -5, -7, -12, -17] // Jacobsthal sequence
         ];
-        
+
         const randomSequenceIndex = Math.floor(Math.random() * sequences.length);
-        
+
         const randomSequence = sequences[randomSequenceIndex];
-        
+
         const randomIndex = Math.floor(Math.random() * randomSequence.length);
-        
-        reward *= (randomSequence[randomIndex] / (randomSequence.length -1));
+
+        reward *= (randomSequence[randomIndex] / (randomSequence.length - 1));
         // Round the reward to the nearest integer
         reward = Math.round(reward);
 
-        
+
         return Math.abs(reward);
-      }
-      
+    }
+
 
     calculateExtraTime(difficulty, stopWatch, strike) {
         // Define some constants for the extra time calculation
@@ -248,31 +294,31 @@ class GameController {
         const STRIKE_FACTOR = -0.5; // The factor by which the strike count decreases the time bonus
         const MIN_TIME = 0; // The minimum extra time possible
         const MAX_TIME = 30; // The maximum extra time possible
-      
+
         // Define an object to map the difficulty levels to numerical values
         const difficultyValues = {
-          "Beginner": 1,
-          "Intermediate": 2,
-          "Advanced": 3,
-          "Expert": 4
+            "Beginner": 1,
+            "Intermediate": 2,
+            "Advanced": 3,
+            "Expert": 4
         };
-      
+
         // Get the numerical value of the player’s level
         const difficultyValue = difficultyValues[difficulty] || 1;
-      
+
         // Calculate the extra time based on the formula:
         // extraTime = baseTime + (difficultyValue * difficultyFactor) + (stopWatch * stopwatchFactor) + (strike * strikeFactor)
         let extraTime = BASE_TIME + (difficultyValue * DIFFICULTY_FACTOR) + (stopWatch * STOPWATCH_FACTOR) + (strike * STRIKE_FACTOR);
-      
+
         // Round the extra time to the nearest integer
         extraTime = Math.round(extraTime);
-      
+
         // Clamp the extra time between the minimum and maximum values
         extraTime = Math.max(MIN_TIME, Math.min(MAX_TIME, extraTime));
-      
+
         return extraTime;
-      }
-      
+    }
+
 
 
 
@@ -398,9 +444,7 @@ class UIManager {
     _playerInfoUI = document.getElementsByClassName("player-info-container")[0];
     _playerNameTag = document.getElementById('player-name-tag');
     _playerScoreTag = document.getElementById('player-score-tag');
-    _playerDifficultyTag = document.getElementById('player-difficulty-tag');
     _playerLivesTag = document.getElementById('player-lives-tag');
-    _playerTimeTag = document.getElementById('player-time-tag');
 
     _gameInfoUI = document.getElementsByClassName("game-info-container")[0];
     _gameDifficultyTag = document.getElementById('game-difficulty-tag');
@@ -422,7 +466,17 @@ class UIManager {
     //all the UI functions
     //start Game UI
     showStartGameUI() {
-        this._startGameUI.style.display = "block";
+        this._startGameUI.style.display = "flex";
+
+        this._playerNameInput.focus();
+        this._playerNameInput.value = "";
+
+        //hide all other UIs
+        this.hideInfoUI();
+        this.hidePlayerInfoUI();
+        this.hideGameInfoUI();
+        this.hideQuestionUI();
+        this.hideSelectDifficultyUI();
     }
     hideStartGameUI() {
         this._startGameUI.style.display = "none";
@@ -433,6 +487,9 @@ class UIManager {
 
         this._InfoUI.style.display = "flex";
 
+    }
+    hideInfoUI() {
+        this._InfoUI.style.display = "none";
     }
     updatePlayerScoreUI(score) {
         this._playerScoreTag.innerHTML = "Score: " + score;
@@ -507,6 +564,14 @@ class UIManager {
     hideSelectDifficultyUI() {
         this._selectDifficultyUI.style.display = "none";
     }
+
+
+
+
+    
+
+
+
     //all the UI events
     //start game UI
     onStartGameEvent() {
@@ -521,6 +586,7 @@ class UIManager {
         const playerDifficultyChoose = this._difficultyRadioButtons.find(difficulty => difficulty.checked);
         let buttons;
         let messageText;
+        
         if (playerDifficultyChoose) {
             messageText = "Are you sure you want to start the game with the difficulty: " + playerDifficultyChoose.value + "?";
             buttons = [
@@ -534,6 +600,12 @@ class UIManager {
         buttons = [{ text: 'Close', onclick: () => { this._messageBox.hide() } }];
 
         this._messageBox.display("Are you Not ready?", messageText, buttons);
+    }
+    onPressOkEvent() {
+        this._messageBox.hide();
+        this._playerNameInput.focus();
+        this._playerNameInput.classList.remove("incorrect");
+        this._playerNameInput.classList.remove("correct");
     }
 
 
@@ -627,6 +699,7 @@ class Game {
     _currentPlayer; // the player that is playing or played this game
 
     _uiManager = UIManager.getInstance();
+    _gameManager = GameManager.getInstance();
 
     constructor(difficulty, player, timeToAnswer = 60) {
         this.difficulty = difficulty;
@@ -667,6 +740,7 @@ class Game {
     }
     stopTimer() {
         clearInterval(this._timeToAnswerInterval);
+        this._timeToAnswerInterval = null;
         this._timeToAnswer = 60;
     }
     addTime(time) {
@@ -684,6 +758,7 @@ class Game {
     }
     stopStopWatch() {
         clearInterval(this._stopWatchInterval);
+        this._stopWatchInterval = null;
         this._stopWatch = 0;
     }
     setMultiplier(multiplier) {
@@ -696,7 +771,33 @@ class Game {
         this._strike = 0;
     }
 
+    gameOver() {
+        //TODO: save the game into gameManager memory
+        //delete the game from the gameManager memory
+        this._gameManager.addGameToPastGames(this);
+        this._gameManager.deleteCurrentGame();
+        this._gameManager.saveGamesToLocalStorage();
+        this._gameManager.deleteCurrentGame();
 
+        //return to the main menu
+        this._uiManager.showStartGameUI();
+
+        //cleanup  memory
+        this._gameManager = null;
+        this._uiManager = null;
+        this._currentPlayer = null;
+        this.currentQuestion = null;
+        this.currentAnswer = null;
+        this.currentPlayerAnswer = null;
+        this.difficulty = null;
+        this._timeToAnswer = null;
+        this._timeToAnswerInterval = null;
+        this._strike = null;
+        this._stopWatch = null;
+        this._stopWatchInterval = null;
+        this._multiplier = null;
+
+    }
 
 
 
@@ -723,7 +824,7 @@ class MessageBox {
 
 
         this._messageBoxMessage.innerHTML = text
-    
+
         this._messageBoxButtons.innerHTML = "";
         this.buttons = buttons;
 
