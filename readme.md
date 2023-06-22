@@ -1,4 +1,4 @@
-# Project Name
+# MathQuiz!
 
 Math quiz is a simple math quiz game for kids. 
 
