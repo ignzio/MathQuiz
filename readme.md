@@ -1,47 +1,58 @@
-# Program README
+# Project Name
 
-This program consists of multiple classes that work together to create a game with math questions. Let's go through each class and their functionalities.
+Math quiz is a simple math quiz game for kids. 
 
-## `GameManager` Class
+## Introduction
 
-- Manages the overall state and settings of the game.
-- Keeps track of the number of attempts made by the player.
-- Stores the current answer.
-- Tracks the difficulty level of the game.
-- Provides methods to modify and access the game state, such as setting the attempt, getting the answer, and resetting the attempt.
-- Initiates the game by starting the game interface or UI element.
-- Acts as a singleton to ensure there is only one instance of the `GameManager` throughout the application.
+It is a web application that can be used on any device with a web browser. The application is built using HTML, CSS and JavaScript. It is a single page application that uses the browser's local storage to store the user's progress and settings.ingle page application that uses the browser's local storage to store the user's progress and settings.
 
-## `GameController` Class
+the game is intentionaly overcomplicated. 
+## Features
 
-- Handles the game logic and actions related to gameplay.
-- Manages the generation of math questions based on the specified difficulty level.
-- Validates the player's answer and provides feedback on correctness.
-- Interacts with the user interface (UI) elements to display questions, retrieve answers, and show results.
-- May handle additional game-related functionalities such as scoring, level progression, or game flow.
-
-## `UiController` Class
-
-- Manages the user interface (UI) elements and their interactions.
-- Provides methods to display and hide different UI elements based on the game state.
-- Updates the player information displayed on the UI.
-- Handles message boxes to display information or messages to the player.
-
-## `Game` Class
-
-- Represents the game state and data.
-- Stores information such as the player's name, score, difficulty level, number of attempts, current question, and answer.
-- Provides methods to modify and access the game data, such as setting the player name, difficulty, score, etc.
-- Includes a method to reset the game state.
-
-## How to Use
-
-To play the game, you can call the `play` function and pass the event object as an argument. This function prevents the default behavior of the event and starts the game by calling `GameManager.getInstance().startGame()`.
-
-Make sure to include all the necessary JavaScript files and HTML elements in your project to properly run the game.
-
-Please note that this README provides an overview of the program structure and functionality. For more detailed information about each class and its methods, refer to the actual code implementation.
+Integrated Calculator: A built-in calculator allows kids to perform calculations and verify their answers directly within the application.
+Random Problem Generation: The application generates random math problems based on the selected difficulty level, providing a diverse set of questions for practice.
+Progress and Settings Persistence: Users can save their progress, name, and settings, ensuring that they can continue where they left off and customize their experience.
+Responsive Design: The application is designed to adapt to different screen sizes and devices, offering a seamless user experience across desktops, laptops, tablets, and smartphones.
+Local Storage Integration: User progress and settings are stored in the browser's local storage, allowing for seamless retrieval and persistence of data.
+Difficulty Level Selection: Users can choose the difficulty level that best suits their skills and learning goals, ranging from basic arithmetic to more advanced math concepts.
+Debug Mode: A debug mode is available for troubleshooting and development purposes, enabling users to identify and address any issues efficiently.
 
 
+## Installation
 
-Based on the additional information you provided about your game being a math question solver game, it seems that the GameManager class could be responsible for starting the game. The GameManager class could manage the overall state of the game, including initializing a new game with the appropriate difficulty level and player information. The GameController class could then control the specific functions of the game, such as generating math questions and checking player answers. However, this is just one possible design and you could organize your code in a different way if it makes more sense for your specific game.
+the game can be played on any device with a web browser.
+to install the game to be played localy, download the repository.
+and open the index.html file in your browser.
+
+## Usage
+
+- to play the game, you need to input your name and click on the start button.
+- you can choose the difficulty level and the number of questions.
+- the game will generate random math problems based on the selected difficulty level, providing a diverse set of questions for practice.
+
+<!-- ## Documentation
+
+Link to the project's documentation, if available. -->
+
+## Contributing
+
+to contribute to the project, you can fork the repository and make a pull request.
+
+## Issues
+
+when you find a bug or want to request a feature, you can open an issue on the repository.
+
+current issues:
+- when inputing answers in smartphone, the keyboard hides the input field and the question.
+- the game is not optimized for small screens.
+- the game does not display the correct username when the user join for the first time.
+- the game does not change the player name if inputing on start game screen.
+## License
+
+This project is licensed under the terms of the [GNU Affero General Public License (AGPL) version 3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
+
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.en.html)
+
+The GNU Affero General Public License is a copyleft license that ensures the freedom to use, modify, and distribute the software to anyone who receives a copy, including over a network or as a service. If you make any modifications or improvements to the software, you are required to release those changes under the same license.
+
+Please refer to the `LICENSE` file for the complete license text and terms.

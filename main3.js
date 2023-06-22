@@ -558,6 +558,7 @@ document.addEventListener("DOMContentLoaded", function () {
             else { //if the answer is incorrect
                 const textMessage = `
                 <h2 class="wrong-text"><span>Wrong Answer<span></h2>
+                <h3 class="wrong-text"><span>Correct Answer: ${this._currentGame._currentAnswer}<span></h3>
                 <span style="color:crimson">-1 life</span>
                 `;
                 const buttons = [{ text: 'Close', onclick: () => { UIMANAGER.onPressOkEvent() } }];
@@ -573,26 +574,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if(this._currentGame._player._lives == 0) { //if the player has no more lives
                     // Game over
-                    const title =   `<h2 class="wrong-text"><span>Game Over!<span></h2>`
-                    const textMessage = `
-             
-                    <span style="color:crimson">You have no more life</span>
-                    `;
-                    const buttons = [{ text: 'Close', onclick: () => { UIMANAGER.onPressOkEvent() } }];
-                    UIMANAGER._messageBox.display(title, textMessage, buttons);
-                    this._currentGame.stopStopWatch();
-                    this._currentGame.stopTimer();
-                    UIMANAGER.onGameOver();
-                    //TODO: ADD SCORE TO HIGHSCORE
-                    //turn score into experience
-                    const playerExperience = this.calculatePlayerExperience(this._currentGame._player._score);
-                    //add experience to player
-                    this._currentGame._player._experience += playerExperience;
-                    this._currentGame._player._score = 0;
-                    //save to local storage
-                    this.savePlayer(this._currentGame._player);
-
-
+                  this.gameOver();
 
                 }
             }
@@ -602,6 +584,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
             UIMANAGER.onCheckAnswer();
         }
+        gameOver() {
+            const title =   `<h2 class="wrong-text"><span>Game Over!<span></h2>`
+            const textMessage = `
+     
+            <span style="color:crimson">You have no more life</span>
+            `;
+            const buttons = [{ text: 'Close', onclick: () => { UIMANAGER.onPressOkEvent() } }];
+            UIMANAGER._messageBox.display(title, textMessage, buttons);
+            this._currentGame.stopStopWatch();
+            this._currentGame.stopTimer();
+            UIMANAGER.onGameOver();
+            //TODO: ADD SCORE TO HIGHSCORE
+            //turn score into experience
+            const playerExperience = this.calculatePlayerExperience(this._currentGame._player._score);
+            //add experience to player
+            this._currentGame._player._experience += playerExperience;
+            this._currentGame._player._score = 0;
+            //save to local storage
+            this.savePlayer(this._currentGame._player);
+        }
+
+
+
         savePlayer(Player) {
             const gameData = JSON.parse(localStorage.getItem("gameData"));
             if(gameData) {
@@ -671,6 +676,83 @@ document.addEventListener("DOMContentLoaded", function () {
             const question = `${firstNumber} ${operator} ${secondNumber}`;
             return [question, answer];
         }
+        
+        intermediateQuestion() {
+          const operations = {
+            '+': (a, b) => a + b,
+            '-': (a, b) => a - b,
+            '*': (a, b) => a * b,
+            '/': (a, b) => a / b
+          };
+          const numCount = Math.floor(Math.random() * 2) + 2;
+          let nums = [];
+          for (let i = 0; i < numCount; i++) {
+            nums.push(Math.floor(Math.random() * 100) + 1);
+          }
+          let question = nums[0].toString();
+          let answer = nums[0];
+          for (let i = 1; i < nums.length; i++) {
+            const operation = Object.keys(operations)[Math.floor(Math.random() * 4)];
+            question += ` ${operation} ${nums[i]}`;
+            answer = operations[operation](answer, nums[i]);
+          }
+          return [ question, answer ];
+        }
+        advancedQuestion() {
+            const numbers = [];
+            const operators = [];
+            let answer;
+            let questionText;
+            let question;
+          
+            // Generate a random number of decimal places to which the answer should be rounded
+            const decimalPlaces = Math.floor(Math.random() * 3) + 1;
+          
+            // Function to generate a random operator
+            const getRandomOperator = () => ['+', '-', '*', '/', '**'][Math.floor(Math.random() * 5)];
+          
+            // Function to generate a random number within a range
+            const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+          
+            // Function to check if the answer is valid
+            const isValidAnswer = (answer) => Math.abs(answer) <= 1e+20 && Math.abs(answer) >= 1e-20;
+          
+            do {
+              // Generate the numbers
+              for (let i = 0; i < 5; i++) {
+                numbers[i] = i === 4 ? getRandomNumber(0, 10) : getRandomNumber(0, 100);
+              }
+          
+              // Generate the operators
+              for (let i = 0; i < 4; i++) {
+                operators[i] = getRandomOperator();
+              }
+          
+              if (Math.random() < 0.5) {
+                questionText = `((${numbers[0]} ${operators[0]} ${numbers[1]}) ${operators[1]} (${numbers[2]} ${operators[2]} ${numbers[3]})) ${operators[3]} ${numbers[4]}`;
+                answer = Function(`'use strict'; return ${questionText}`)();
+              } else {
+                questionText = `${numbers[0]} ${operators[0]} ((${numbers[1]} ${operators[1]} (${numbers[2]} ${operators[2]} ${numbers[3]})) ${operators[3]} ${numbers[4]})`;
+                answer = Function(`'use strict'; return ${questionText}`)();
+              }
+            } while (!isValidAnswer(answer));
+          
+              // Round the answer to the specified number of decimal places
+              if (answer.toFixed(decimalPlaces).endsWith(`.${'0'.repeat(decimalPlaces)}`)) {
+                  answer = Math.round(answer);
+                  question = questionText;
+              } else {
+                  answer = parseFloat(answer.toFixed(decimalPlaces));
+                  question = `${questionText}. Round your answer to ${decimalPlaces} decimal places.`;
+              }
+          
+              return [question, answer];
+          }
+          
+          
+          
+          
+          
 
         calculateExtraTime() { 
             //calculate extra time based on the difficulty level and with a bit of randomness
@@ -864,11 +946,30 @@ document.addEventListener("DOMContentLoaded", function () {
             this._difficulty = difficulty;
             this._player = playerName;
             console.log("game created",this);
-            this.initializeGame();
+
+
+
+            this.initializeGame(this._difficulty);
         }
 
-        initializeGame() {
-            console.log("game initialized");
+        initializeGame(difficulty) {
+            switch (difficulty) {
+                case "Beginner":
+                    this._timeToAnswer = 60;
+                    break;
+                case "Intermediate":
+                    this._timeToAnswer = 90;
+                    break;
+                case "Advanced":
+                    this._timeToAnswer = 150;
+                    break;
+                case "Expert":
+                    this._timeToAnswer = 230;
+                    break;
+                default:
+                    this._timeToAnswer = 60;
+                    break;
+            }
             
         }
 
@@ -905,10 +1006,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 UIMANAGER.updateTimer(this._timeToAnswer);
                 if (this._timeToAnswer <= 0) {
                     this.stopTimer();
-                    this._timeToAnswer = 60;
-                    this._strikeCount += 1;
-                    UIMANAGER.updateStrikes(this._strikeCount);
-                    UIMANAGER.onStrike();
+                    GAMEMANAGER._gameController.gameOver();
                 }
             }, 1000);
         }
