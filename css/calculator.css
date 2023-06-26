@@ -1,0 +1,18 @@
+.Calculator{
+    position: fixed;
+    display: grid;
+
+    grid-template-rows: 1fr 2fr;
+    width: 500px;
+    height: 700px;
+    top: 50%;
+    left: 50%;
+    padding: 10px;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    background-color: var(--secondary-color);
+    cursor: move;
+    z-index: 100;
+}
+  
+

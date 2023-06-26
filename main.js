@@ -419,7 +419,7 @@ class UiManager {
         this._checkAnswerButton.disabled = true;
         this._playerAnswerInput.disabled = true;
         this._generateQuestionButton.disabled = false;
-        this._playerAnswerInput.value = "";
+     
 
     }
     onAnswerCorrect() {
@@ -430,6 +430,7 @@ class UiManager {
         this._playerAnswerInput.classList.remove("incorrect");
         this._playerAnswerInput.classList.remove("correct");
         this._playerAnswerInput.classList.add("correct");
+        
 
     }
     onAnswerIncorrect() {
@@ -556,11 +557,12 @@ class GameController {
         else { //if the answer is incorrect
             const textMessage = `
                 <h2 class="wrong-text"><span>Wrong Answer<span></h2>
+                <h3 class="wrong-text"><span>Your Answer: ${answer}<span></h3>
                 <h3 class="wrong-text"><span>Correct Answer: ${this._currentGame._currentAnswer}<span></h3>
                 <span style="color:crimson">-1 life</span>
                 `;
             const buttons = [{ text: 'Close', onclick: () => { UIMANAGER.onPressOkEvent() } }];
-            UIMANAGER._messageBox.display("Wrong Answer", textMessage, buttons);
+            UIMANAGER._messageBox.display("", textMessage, buttons);
             this._currentGame._player._lives -= 1;
             this._currentGame._strikeCount = 0;
             this._currentGame.stopStopWatch();
@@ -797,10 +799,11 @@ class GameController {
             questionText = `${numbers[0]} ${operators[0]} ((${numbers[1]} ${operators[1]} (${numbers[2]} ${operators[2]} (${numbers[3]} ${operators[3]} ${numbers[4]}))) ${operators[4]} (${numbers[5]} ${operators[5]} ${numbers[6]}))`;
           }
       
-          // Add parentheses around arguments of trigonometric functions
+          // Add parentheses around arguments of trigonometric functions and sqrt function
           questionText = questionText.replace(/sin\s+(\d+)/g, 'sin($1)');
           questionText = questionText.replace(/cos\s+(\d+)/g, 'cos($1)');
           questionText = questionText.replace(/tan\s+(\d+)/g, 'tan($1)');
+          questionText = questionText.replace(/sqrt\s+(\d+)/g, 'sqrt($1)');
       
           console.log(`Generated question: ${questionText}`);
       
@@ -820,6 +823,8 @@ class GameController {
       
         return [question, answer];
       }
+      
+      
       
       
       
@@ -1143,4 +1148,64 @@ class MessageBox {
     hide() {
         this._messageBoxUI.style.display = "none";
     };
+}
+
+
+
+
+class Calculator {
+
+
+    add(a, b) {
+        return a + b;
+    }
+    subtract(a, b) {
+        return a - b;
+    }
+    multiply(a, b) {
+        return a * b;
+    }
+    divide(a, b) {
+        return a / b;
+    }
+    power(a, b) {
+        return Math.pow(a, b);
+    }
+    squareRoot(a) {
+        return Math.sqrt(a);
+    }
+    factorial(a) {
+        if (a == 0) {
+            return 1;
+        }
+        return a * this.factorial(a - 1);
+    }
+    log(a) {
+        return Math.log(a);
+    }
+    sin(a) {
+        return Math.sin(a);
+    }
+    cos(a) {
+        return Math.cos(a);
+    }
+    tan(a) {
+        return Math.tan(a);
+    }
+    
+    round(a) {
+        return Math.round(a);
+    }
+    floor(a) {
+        return Math.floor(a);
+    }
+    ceil(a) {
+        return Math.ceil(a);
+    }
+    abs(a) {
+        return Math.abs(a);
+    }
+    
+
+    
 }
